@@ -7,6 +7,7 @@ COPY templates/* ./templates/
 COPY scripts/* ./scripts/
 
 EXPOSE 50
+EXPOSE 5432
 
 RUN apt update
 RUN apt install -y python3 python3-pip python3-venv
