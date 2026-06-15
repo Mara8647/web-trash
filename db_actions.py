@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import psycopg
 from sqlalchemy import create_engine, String, Integer, select, insert, text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 
 load_dotenv()
 
@@ -12,9 +12,6 @@ POSTGRES_DB = os.getenv("POSTGRES_DB")
 DATABASE_URL = f"postgresql+psycopg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:5432/{POSTGRES_DB}"
 
 engine = create_engine(DATABASE_URL, echo=True)
-
-SessionLocal = sessionmaker(bind=engine)
-
 
 class Base(DeclarativeBase):
     pass
@@ -31,7 +28,11 @@ class Users(Base):
         return f"Users(id={self.id!r}, name={self.name!r}, email={self.email!r}, password={self.password!r})"
     
 def add_user(un, em, pswd):
-    with engine.connect() as conn:
-        stmt = insert(Users).values(name=un, email=em, password=pswd)
-        conn.execute(stmt)
-        conn.commit()
+    with Session(engine) as session:
+        new_user = Users(
+            name=un,
+            email=em,
+            password=pswd
+        )
+        session.add(new_user)
+        session.commit()
