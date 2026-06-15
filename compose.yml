@@ -1,7 +1,7 @@
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres_db
+  db:
+    image: vs:latest
+    container_name: vs-access-panel
     restart: always
     environment:
       POSTGRES_USER: "postgres"
@@ -10,6 +10,7 @@ services:
       PGDATA: "/var/lib/postgresql/data"
     ports:
       - 2345:5432
+      - 50:50
     volumes:
       - ./pgdata:/var/lib/postgresql/data
 

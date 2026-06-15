@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
-import db_actions
+import db_actions as db_actions
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
 
 @app.route("/")
 def index():
@@ -19,4 +19,4 @@ def register():
     return render_template('register_page.html')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=50)
