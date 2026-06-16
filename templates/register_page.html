@@ -26,10 +26,11 @@
             </div>
 
             <!-- Поле сервисов -->
-            <div id="servicesField" class="mb-4 text-center">
-                <label class="form-label">Сервисы</label>
-                <div id="servicesCheckboxes" class = "d-flex flex-wrap gap-2 p-2 border rounded"></div>
-                <input type="hidden" name="services" id="servicesInput" value="none">
+            <div class="form-check" style="justify-content: center; align-items: center;">
+                <input class="form-check-input" type="checkbox"  value="" id="check1">
+                <label class="form-check-label" for="check1">
+                    Default checkbox
+                </label>
             </div>
 
             <div class="text-center">
@@ -37,50 +38,4 @@
             </div>
         </form>
     </body>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const servicesField = document.getElementById('servicesField');
-            const servicesContainer = document.getElementById('servicesCheckboxes');
-            const servicesInput = document.getElementById('servicesInput');
-
-            const servicesList = [
-                {value: 'vpn', label: 'VPN'},
-                {value: 'mail', label: 'Почта'},
-                {value: '1С', label: '1С'},
-                {value: 'bitrix', label: 'Bitrix24'}
-            ];
-
-            function initServicesButtons() {
-                if (servicesContainer.children.lentgth > 0) return;
-
-                const selected = new Set();
-    
-                servicesList.forEach(item =>{
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'btn btn-outline-secondary btn-sm';
-                    btn.textContent = item.label;
-                    btn.dataset.value = item.value;
-    
-                    btn.addEventListener('click', () => {
-                        if (selected.has(item.value)) {
-                            selected.delete(item.value);
-                            btn.classList.remove('btn-primary');
-                            btn.classList.add('btn-outline-secondary');
-                        } else {
-                            selected.add(item.value);
-                            btn.classList.remove('btn-outline-secondary');
-                            btn.classList.add('btn-primary');
-                        }
-                        servicesInput.value = selected.size > 0 ? Array.from(selected).join(',') : 'none';
-                    });
-    
-                    servicesContainer.appendChild(btn);
-                });
-            }
-
-            initServicesButtons();
-        });
-    </script>
 </html>

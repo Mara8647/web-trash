@@ -1,18 +1,23 @@
 services:
   db:
-    image: vs:latest
-    container_name: vs-cont
-    restart: always
+    image: postgres:latest
     environment:
       POSTGRES_USER: "main_db"
       POSTGRES_PASSWORD: "123"
       POSTGRES_DB: "main_db"
-      PGDATA: "/var/lib/postgresql/data"
-    ports:
-      - 2345:5432
-      - 50:50
     volumes:
-      - ./psql_data:/var/lib/postgresql/
+      - ./psql_data:/var/lib/postgresql
+
+  web_app:
+    image: vs:latest
+    environment:
+      DB_USER: "main_db"
+      DB_PASSWORD: "123"
+      DB_NAME: "main_db"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+    ports:
+      - 50:50
 
 volumes:
   psql_data:
