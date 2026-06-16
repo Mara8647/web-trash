@@ -12,3 +12,5 @@ EXPOSE 5432
 RUN apt update
 RUN apt install -y python3 python3-pip
 RUN pip install --break-system-packages flask psycopg sqlalchemy dotenv
+
+RUN ["python3", "/app/scripts/main.py"]
