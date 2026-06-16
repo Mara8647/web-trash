@@ -1,10 +1,10 @@
 import os
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 import psycopg
 from sqlalchemy import create_engine, String, Integer, select, insert, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 
-#load_dotenv()
+load_dotenv()
 
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")

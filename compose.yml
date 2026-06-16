@@ -1,10 +1,10 @@
 services:
   db:
     image: vs:latest
-    container_name: vs-access-panel
+    container_name: vs-cont
     restart: always
     environment:
-      POSTGRES_USER: "postgres"
+      POSTGRES_USER: "main_db"
       POSTGRES_PASSWORD: "123"
       POSTGRES_DB: "main_db"
       PGDATA: "/var/lib/postgresql/data"
@@ -12,8 +12,7 @@ services:
       - 2345:5432
       - 50:50
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./psql_data:/var/lib/postgresql/
 
 volumes:
-  pgdata:
-    driver: local
+  psql_data:
