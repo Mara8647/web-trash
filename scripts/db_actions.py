@@ -21,17 +21,24 @@ class Users(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
-    email: Mapped[str] = mapped_column(String(100), unique=True)
     password: Mapped[str] = mapped_column(String(25))
 
     def __repr__(self) -> str:
-        return f"Users(id={self.id!r}, name={self.name!r}, email={self.email!r}, password={self.password!r})"
+        return f"Users(id={self.id!r}, name={self.name!r}, password={self.password!r})"
     
-def add_user(un, em, pswd):
+def add_user(un, pswd):
     with Session(engine) as session:
         new_user = Users(
             name=un,
-            email=em,
+            password=pswd
+        )
+        session.add(new_user)
+        session.commit()
+
+def look_for_user(un, pswd):
+    with Session(engine) as session:
+        new_user = Users(
+            name=un,
             password=pswd
         )
         session.add(new_user)

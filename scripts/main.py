@@ -11,12 +11,21 @@ def index():
 def register():
     if request.method == "POST":
         username = request.form.get("username")
-        email = request.form.get("email")
         password = request.form.get("password")
 
-        db_actions.add_user(username, email, password)
+        db_actions.add_user(username, password)
     
     return render_template('register_page.html')
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+    return render_template('login_page.html')
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=50)
