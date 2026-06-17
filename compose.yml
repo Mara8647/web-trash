@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:latest
+    container_name: psql_db
     environment:
       POSTGRES_USER: "main_db"
       POSTGRES_PASSWORD: "123"
@@ -10,6 +11,7 @@ services:
 
   web_app:
     image: vs:latest
+    container_name: flask_app
     environment:
       DB_USER: "main_db"
       DB_PASSWORD: "123"

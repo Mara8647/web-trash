@@ -12,9 +12,9 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        selected = request.form.getlist("options")
 
-        db_actions.add_user(username, password)
-    
+        print(username, password, selected)
     return render_template('register_page.html')
 
 @app.route("/login", methods=["POST", "GET"])
