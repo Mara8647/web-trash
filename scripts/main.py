@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request
-import db_actions as db_actions
+from flask import Flask, render_template, request, redirect
+import db_actions
 
+# 
 app = Flask(__name__, template_folder='../templates')
+
+db_actions.init_db()
 
 @app.route("/")
 def index():
@@ -14,7 +17,7 @@ def register():
         password = request.form.get("password")
         selected = request.form.getlist("options")
 
-        print(username, password, selected)
+        return redirect('main_admin')
     return render_template('register_page.html')
 
 @app.route("/login", methods=["POST", "GET"])
@@ -24,6 +27,10 @@ def login():
         password = request.form.get("password")
 
     return render_template('login_page.html')
+
+@app.route("/main_admin", methods=["POST", "GET"])
+def main_admin():
+    return render_template("main_page_admin.html")
 
 
 

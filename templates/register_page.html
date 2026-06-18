@@ -16,36 +16,38 @@
     <body>
         <form method="POST" id="mainForm">
             <div class="mb-3 mt-3 container">
-                <label class="form-label">Логин</label>
-                <input type="text" class="form-control" name="username" placeholder="например: Иван Иванов" required>
+                <label class="form-label">ФИО</label>
+                <input type="text" class="form-control" name="username" placeholder="Например: Иван Иванов" required>
             </div>
 
             <div class="mb-3 container">
                 <label class="form-label">Пароль</label>
-                <input type="password" class="form-control" name="password" placeholder="например: 123aBc_456" required>
+                <input type="password" class="form-control" name="password" placeholder="Например: 123aBc_456" required>
             </div>
 
             <!-- Поле сервисов -->
-            <ul class="list-group list-group-light m-5">
-                <li class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="options" value="vpn">
-                    VPN
-                </li>
-                <li class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="options" value="mail">
-                    Почта
-                </li>
-                <li class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="options" value="1c">
-                    1С
-                </li>
-                <li class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="options" value="bitrix">
-                    Bitrix24
-                </li>
-            </ul>
+            <div class="container">
+                <ul class="list-group list-group-light">
+                    <li class="list-group-item">
+                        <input class="form-check-input me-1" type="checkbox" name="options" value="vpn">
+                        Почта
+                    </li>
+                    <li class="list-group-item">
+                        <input class="form-check-input me-1" type="checkbox" name="options" value="mail">
+                        VPN
+                    </li>
+                    <li class="list-group-item">
+                        <input class="form-check-input me-1" type="checkbox" name="options" value="1c">
+                        1С
+                    </li>
+                    <li class="list-group-item">
+                        <input class="form-check-input me-1" type="checkbox" name="options" value="bitrix">
+                        Bitrix24
+                    </li>
+                </ul>
+            </div>
 
-            <div class="text-center">
+            <div class="text-center pt-3">
                 <button type="submit" class="btn btn-primary" id="nextButton">Создать сотрудника</button>
             </div>
         </form>
