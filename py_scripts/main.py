@@ -9,13 +9,13 @@ app.secret_key = "qHg3OJ9GKmsfLr"
 
 def create_login(name):
     transliterated = transliterate.translit(name, 'ru', reversed=True)
-    last_name, first_name, middle_name = transliterated.lower().split()
+    last_name, first_name, _ = transliterated.lower().split()
     
     login = first_name[0] + '.' + last_name
 
     temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
 
-    return temp_password
+    return login, temp_password
 
 
 @app.route("/")

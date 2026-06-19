@@ -1,51 +1,176 @@
+from __future__ import annotations
+
 import os
-from dotenv import load_dotenv
-from sqlalchemy import create_engine, String, text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
+from datetime import datetime
+from typing import Optional
 
-load_dotenv()
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship, sessionmaker
 
-DATABASE_URL = f"sqlite:///main.db"
+DEFAULT_SQLITE_URL = "sqlite:///./vs_access_panel.sqlite3"
+DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_SQLITE_URL)
 
-engine = create_engine(DATABASE_URL, echo=True)
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, echo=False, future=True, connect_args=connect_args)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+
 
 class Base(DeclarativeBase):
     pass
 
-class Users(Base):
-    __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(50))
-    password: Mapped[str] = mapped_column(String(25))
-    role: Mapped[str] = mapped_column(String(50))
+class Role(Base):
+    __tablename__ = "roles"
 
-    def __repr__(self) -> str:
-        return f"Users(id={self.id!r}, name={self.name!r}, password={self.password!r})"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    description: Mapped[str] = mapped_column(Text, default="")
+    department_default: Mapped[str] = mapped_column(String(120), default="")
+    ad_groups: Mapped[str] = mapped_column(Text, default="")
+    onec_groups: Mapped[str] = mapped_column(Text, default="")
+    vpn_profile: Mapped[str] = mapped_column(String(120), default="")
+    need_email_default: Mapped[bool] = mapped_column(Boolean, default=True)
+    need_vpn_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    need_onec_default: Mapped[bool] = mapped_column(Boolean, default=True)
+    need_bitrix_default: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-def init_db():
+    employees: Mapped[list["Employee"]] = relationship(back_populates="role")
+
+
+class Employee(Base):
+    __tablename__ = "employees"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    login: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(180), default="")
+    department: Mapped[str] = mapped_column(String(120), default="")
+    position: Mapped[str] = mapped_column(String(120), default="")
+    manager: Mapped[str] = mapped_column(String(180), default="")
+    start_date: Mapped[Optional[datetime]] = mapped_column(Date, nullable=True)
+    status: Mapped[str] = mapped_column(String(50), default="Новый")
+
+    need_email: Mapped[bool] = mapped_column(Boolean, default=True)
+    need_vpn: Mapped[bool] = mapped_column(Boolean, default=False)
+    need_onec: Mapped[bool] = mapped_column(Boolean, default=True)
+    need_bitrix: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    ad_status: Mapped[str] = mapped_column(String(50), default="Ожидает")
+    mail_status: Mapped[str] = mapped_column(String(50), default="Ожидает")
+    vpn_status: Mapped[str] = mapped_column(String(50), default="Не требуется")
+    onec_status: Mapped[str] = mapped_column(String(50), default="Ожидает")
+    bitrix_status: Mapped[str] = mapped_column(String(50), default="Ожидает")
+
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
+    role: Mapped[Role] = relationship(back_populates="employees")
+
+    created_by: Mapped[str] = mapped_column(String(120), default="admin")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    disabled_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    audit_logs: Mapped[list["AuditLog"]] = relationship(back_populates="employee", cascade="all, delete-orphan")
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_log"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    employee_id: Mapped[Optional[int]] = mapped_column(ForeignKey("employees.id"), nullable=True)
+    actor: Mapped[str] = mapped_column(String(120), default="admin")
+    module: Mapped[str] = mapped_column(String(80), nullable=False)
+    action: Mapped[str] = mapped_column(String(160), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), nullable=False)
+    message: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    employee: Mapped[Optional[Employee]] = relationship(back_populates="audit_logs")
+
+
+def get_session() -> Session:
+    return SessionLocal()
+
+
+def init_db() -> None:
     Base.metadata.create_all(engine)
-    with engine.connect() as conn:
-        admin_created = conn.execute(text("SELECT EXISTS(SELECT 1 FROM users WHERE role = 'admin')")).fetchone()[0]
-        if admin_created == False:
-            conn.execute(text(f"INSERT INTO users (id, name, password, role) VALUES (1, '{os.getenv("ADMIN_LOGIN")}', '{os.getenv("ADMIN_PASSWORD")}', 'admin');"))
+    seed_roles()
 
-        conn.commit()
-    print("db was initialized")
 
-def add_user(un, pswd, r):
-    with Session(engine) as session:
-        new_user = Users(
-            name = un,
-            password = pswd,
-            role = r
-        )
-        session.add(new_user)
+def seed_roles() -> None:
+    default_roles = [
+        {
+            "code": "storage_worker",
+            "name": "Кладовщик",
+            "description": "Складская роль: 1С склад, ТСД, без удалённого VPN по умолчанию.",
+            "department_default": "Склад",
+            "ad_groups": "GG_Sklad, GG_1C_Sklad, GG_TSD_Users",
+            "onec_groups": "Склад, ТСД",
+            "vpn_profile": "",
+            "need_email_default": True,
+            "need_vpn_default": False,
+            "need_onec_default": True,
+            "need_bitrix_default": True,
+        },
+        {
+            "code": "sales_manager",
+            "name": "Менеджер продаж",
+            "description": "Продажи: 1С продажи, Bitrix24, почта и VPN.",
+            "department_default": "Отдел продаж",
+            "ad_groups": "GG_Sales, GG_1C_Sales, GG_Bitrix_Users",
+            "onec_groups": "Продажи, CRM",
+            "vpn_profile": "ovpn-office",
+            "need_email_default": True,
+            "need_vpn_default": True,
+            "need_onec_default": True,
+            "need_bitrix_default": True,
+        },
+        {
+            "code": "accountant",
+            "name": "Бухгалтер",
+            "description": "Бухгалтерия: доступ к 1С Бухгалтерия/КА и удалённый VPN.",
+            "department_default": "Бухгалтерия",
+            "ad_groups": "GG_Buh, GG_1C_Buh, GG_Reports_Read",
+            "onec_groups": "Бухгалтерия, Казначейство",
+            "vpn_profile": "ovpn-finance",
+            "need_email_default": True,
+            "need_vpn_default": True,
+            "need_onec_default": True,
+            "need_bitrix_default": True,
+        },
+        {
+            "code": "supervisor",
+            "name": "Руководитель",
+            "description": "Руководитель отдела: отчёты, согласования, расширенный Bitrix24.",
+            "department_default": "Руководство",
+            "ad_groups": "GG_Managers, GG_Reports, GG_Bitrix_Managers",
+            "onec_groups": "Руководитель, Отчёты",
+            "vpn_profile": "ovpn-managers",
+            "need_email_default": True,
+            "need_vpn_default": True,
+            "need_onec_default": True,
+            "need_bitrix_default": True,
+        },
+        {
+            "code": "it",
+            "name": "IT",
+            "description": "IT-специалист: технические группы и административные инструменты.",
+            "department_default": "IT",
+            "ad_groups": "GG_IT, GG_Admin_Tools, GG_VPN_Admins",
+            "onec_groups": "Администрирование",
+            "vpn_profile": "ovpn-admin",
+            "need_email_default": True,
+            "need_vpn_default": True,
+            "need_onec_default": True,
+            "need_bitrix_default": True,
+        },
+    ]
+
+    with SessionLocal() as session:
+        for item in default_roles:
+            exists = session.query(Role).filter(Role.code == item["code"]).first()
+            if not exists:
+                session.add(Role(**item))
         session.commit()
-
-def get_user(un, pswd):
-    with engine.connect() as conn:
-        result = conn.execute(text(f"SELECT role FROM users WHERE name = '{un}' AND password = '{pswd}'"))
-        role = result.scalar()
-
-        return role
