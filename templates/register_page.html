@@ -11,38 +11,45 @@
                 font-weight: 600;
                 border-radius: 10px;
             }
+
+            .card {
+                width: 320px;
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            }
         </style>
     </head>
     <body>
         <form method="POST" id="mainForm">
             <div class="mb-3 mt-3 container">
                 <label class="form-label">ФИО</label>
-                <input type="text" class="form-control" name="username" placeholder="Например: Иван Иванов" required>
+                <input type="text" class="form-control" name="name" placeholder="Например: Иванов Иван Иванович" required autofocus>
             </div>
 
-            <div class="mb-3 container">
-                <label class="form-label">Пароль</label>
-                <input type="password" class="form-control" name="password" placeholder="Например: 123aBc_456" required>
-            </div>
-
-            <!-- Поле сервисов -->
+            <!-- Поле ролей -->
             <div class="container">
                 <ul class="list-group list-group-light">
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" name="options" value="vpn">
-                        Почта
+                        <input class="form-check-input me-1" type="radio" name="role" value="storage_worker">
+                        Кладовщик
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" name="options" value="mail">
-                        VPN
+                        <input class="form-check-input me-1" type="radio" name="role" value="sales_manager">
+                        Менеджер продаж
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" name="options" value="1c">
-                        1С
+                        <input class="form-check-input me-1" type="radio" name="role" value="accountant">
+                        Бухгалтер
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" name="options" value="bitrix">
-                        Bitrix24
+                        <input class="form-check-input me-1" type="radio" name="role" value="supervisor">
+                        Руководитель
+                    </li>
+                    <li class="list-group-item">
+                        <input class="form-check-input me-1" type="radio" name="role" value="it">
+                        IT
                     </li>
                 </ul>
             </div>
