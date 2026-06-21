@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, session
 import transliterate
 import random
 import string
-from db_actions import init_db, get_user, add_user
+from db_actions import init_db, add_employee
+import datetime
 
 app = Flask(__name__, template_folder='../templates')
 app.secret_key = "qHg3OJ9GKmsfLr"
@@ -25,12 +26,24 @@ def index():
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
-        name = request.form.get("name")
-        role = request.form.get("role")
-
-        passsword = create_login(name)
+        full_name = request.form.get("full_name")
+        department = request.form.get("department")
+        position = request.form.get("position")
+        manager = request.form.get("manager")
+        start_date = request.form.get("start_date")
+        email_domain = request.form.get("email_domain")
+        role_id = request.form.get("role_id")
         
-        add_user(name, passsword, role)
+        login, temp_password = create_login(full_name)
+        
+        email = f"{login}@{email_domain}"
+
+        start_date = start_date.split("-")
+        start_date = datetime.datetime(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+
+        role = add_employee(full_name, login, department, position, manager, start_date, email, role_id)
+
+        return render_template('employee_created.html', login=login, email=email, temp_password=temp_password, role=role)
 
     return render_template('register_page.html')
 

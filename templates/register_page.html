@@ -19,43 +19,74 @@
                 border-radius: 12px;
                 box-shadow: 0 0 15px rgba(0,0,0,0.2);
             }
+
+            #wrapper {
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
         </style>
     </head>
     <body>
         <form method="POST" id="mainForm">
             <div class="mb-3 mt-3 container">
                 <label class="form-label">ФИО</label>
-                <input type="text" class="form-control" name="name" placeholder="Например: Иванов Иван Иванович" required autofocus>
+                <input type="text" class="form-control" name="full_name" placeholder="Например: Иванов Иван Иванович" required autofocus>
+            </div>
+
+            <div class="mb-3 mt-3 container">
+                <label class="form-label">Отдел</label>
+                <input type="text" class="form-control" name="department" placeholder="Например: Отдел продаж" required >
+            </div>
+
+            <div class="mb-3 mt-3 container">
+                <label class="form-label">Должность</label>
+                <input type="text" class="form-control" name="position" placeholder="Например: Менеджер продаж" required >
+            </div>
+
+            <div class="mb-3 mt-3 container">
+                <label class="form-label">Руководитель</label>
+                <input type="text" class="form-control" name="manager" placeholder="Например: Петров Пётр" required >
+            </div>
+
+            <div class="mb-3 mt-3 container">
+                <label class="form-label">Дата выхода</label>
+                <input type="date" class="form-control" name="start_date" required>
+            </div>
+
+            <div class="mb-3 mt-3 container">
+                <label class="form-label">Домен почты</label>
+                <input type="text" class="form-control" name="email_domain" placeholder="company.local" required>
             </div>
 
             <!-- Поле ролей -->
             <div class="container">
                 <ul class="list-group list-group-light">
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="radio" name="role" value="storage_worker">
+                        <input class="form-check-input me-1" type="radio" name="role_id" value="1">
                         Кладовщик
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="radio" name="role" value="sales_manager">
+                        <input class="form-check-input me-1" type="radio" name="role_id" value="2">
                         Менеджер продаж
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="radio" name="role" value="accountant">
+                        <input class="form-check-input me-1" type="radio" name="role_id" value="3">
                         Бухгалтер
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="radio" name="role" value="supervisor">
+                        <input class="form-check-input me-1" type="radio" name="role_id" value="4">
                         Руководитель
                     </li>
                     <li class="list-group-item">
-                        <input class="form-check-input me-1" type="radio" name="role" value="it">
+                        <input class="form-check-input me-1" type="radio" name="role_id" value="5">
                         IT
                     </li>
                 </ul>
             </div>
 
-            <div class="text-center pt-3">
-                <button type="submit" class="btn btn-primary" id="nextButton">Создать сотрудника</button>
+            <div class="text-center pt-3 pb-3">
+                <button type="submit" onclick="document.getElementById('wrapper').style.visibility = visible" class="btn btn-primary" id="nextButton">Создать сотрудника</button>
             </div>
         </form>
     </body>

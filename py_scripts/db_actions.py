@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import os
+from dotenv import load_dotenv
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship, sessionmaker
+
+load_dotenv()
 
 DEFAULT_SQLITE_URL = "sqlite:///./vs_access_panel.sqlite3"
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_SQLITE_URL)
@@ -17,6 +20,14 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, futu
 
 class Base(DeclarativeBase):
     pass
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    role: Mapped[str] = mapped_column(String(64))
+    password: Mapped[str] = mapped_column(String(64))
 
 
 class Role(Base):
@@ -96,6 +107,16 @@ def get_session() -> Session:
 
 def init_db() -> None:
     Base.metadata.create_all(engine)
+    with SessionLocal() as session:
+        admin_password = os.getenv("ADMIN_PASSWORD")
+        admin_user = User(
+            role="admin",
+            password=admin_password
+        )
+
+        session.add(admin_user)
+        session.commit()
+
     seed_roles()
 
 
@@ -174,3 +195,47 @@ def seed_roles() -> None:
             if not exists:
                 session.add(Role(**item))
         session.commit()
+
+def add_employee(full_name, login, department, position, manager, start_date, email, role_id):
+    with engine.connect() as conn:
+        stmt = select(Role).where(Role.id == role_id)
+        result = conn.execute(stmt).fetchone()
+        
+        with SessionLocal() as session:
+            new_employee = Employee(
+                full_name=full_name,
+                login=login,
+                email=email,
+                department=department,
+                position=position,
+                manager=manager,
+                start_date=start_date,
+                status="Pending",
+                need_email=result[9],
+                need_vpn=result[10],
+                need_onec=result[11],
+                need_bitrix=result[12],
+                role_id=role_id
+            )
+
+            session.add(new_employee)
+            session.flush()
+            
+            role = session.get(Role, role_id)
+
+            session.add(
+                AuditLog(
+                    employee_id=new_employee.id,
+                    actor="admin",
+                    module="Onboarding",
+                    action="Создание карточки сотрудника",
+                    status="Успешно",
+                    message=f"Создана карточка. Логин: {login}. Роль: {role.name}.",
+                )
+            )
+
+            session.commit()
+
+            return role.name
+
+init_db()
