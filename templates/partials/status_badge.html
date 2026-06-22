@@ -1,0 +1,12 @@
+{% set st = employee.status %}
+{% if st == 'Готово' %}
+  <span class="badge rounded-pill text-bg-success">{{ st }}</span>
+{% elif st == 'Частично готово' %}
+  <span class="badge rounded-pill text-bg-warning">{{ st }}</span>
+{% elif st == 'Уволен / отключен' %}
+  <span class="badge rounded-pill text-bg-secondary">{{ st }}</span>
+{% elif st == 'Ошибка' %}
+  <span class="badge rounded-pill text-bg-danger">{{ st }}</span>
+{% else %}
+  <span class="badge rounded-pill text-bg-primary">{{ st }}</span>
+{% endif %}

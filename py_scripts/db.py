@@ -219,7 +219,7 @@ def add_employee(full_name, login, department, position, manager, start_date, em
                 position=position,
                 manager=manager,
                 start_date=start_date,
-                status="Pending",
+                status="Новый",
                 need_email=result[9],
                 need_vpn=result[10],
                 need_onec=result[11],

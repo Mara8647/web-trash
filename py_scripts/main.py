@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, session
 import transliterate
 import random
 import string
-from db import init_db, add_employee, get_user, SessionLocal, Employee
+from db import init_db, add_employee, get_user, SessionLocal, Employee, Role
+from sqlalchemy import desc
 import datetime
 
 app = Flask(__name__, template_folder='../templates')
@@ -36,12 +37,26 @@ def index():
         login = request.form.get("login")
         password = request.form.get("password")
 
-        salt, access = get_user(login, password)
+        access = get_user(login, password)
 
         if access == 'admin':
-            return render_template('main_admin.html')
+            return render_template('base.html')
 
     return render_template('index.html')
+
+@app.route("/employees")
+def employees():
+    q = request.args.get("q", "").strip()
+    status = request.args.get("status", "").strip()
+    with SessionLocal() as session:
+        query = session.query(Employee).join(Role).order_by(desc(Employee.created_at))
+        if q:
+            like = f"%{q}%"
+            query = query.filter((Employee.full_name.ilike(like)) | (Employee.login.ilike(like)) | (Employee.department.ilike(like)))
+        if status:
+            query = query.filter(Employee.status == status)
+        items = query.all()
+        return render_template("employees.html", employees=items, q=q, status=status)
 
 @app.route("/create_employee", methods=["POST", "GET"])
 def register():

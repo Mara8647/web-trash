@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <table class="table align-middle table-hover">
+        <thead><tr><th>Сотрудник</th><th>Роль</th><th>AD</th><th>Почта</th><th>VPN</th><th>1С</th><th>Статус</th></tr></thead>
+        <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.login }}</td>
+            <td>{{ employee.role.name }}</td>
+            <td>{{ employee.ad_status }}</td>
+            <td>{{ employee.mail_status }}</td>
+            <td>{{ employee.vpn_status }}</td>
+            <td>{{ employee.onec_status }}</td>
+            <td>{% include "partials/status_badge.html" with context %}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-secondary">Сотрудников не найдено.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
