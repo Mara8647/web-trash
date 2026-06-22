@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import transliterate
 import random
 import string
-from db_actions import init_db, add_employee, get_user, SessionLocal, Employee
+from db import init_db, add_employee, get_user, SessionLocal, Employee
 import datetime
 
 app = Flask(__name__, template_folder='../templates')
@@ -36,7 +36,7 @@ def index():
         login = request.form.get("login")
         password = request.form.get("password")
 
-        access = get_user(login, password)
+        salt, access = get_user(login, password)
 
         if access == 'admin':
             return render_template('main_admin.html')
