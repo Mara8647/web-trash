@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import transliterate
 import random
 import string
-from db_actions import init_db, add_employee, get_user
+from db_actions import init_db, add_employee, get_user, SessionLocal, Employee
 import datetime
 
 app = Flask(__name__, template_folder='../templates')
@@ -12,7 +12,18 @@ def create_login(name):
     transliterated = transliterate.translit(name, 'ru', reversed=True)
     last_name, first_name, _ = transliterated.lower().split()
     
-    login = first_name[0] + '.' + last_name
+    base = first_name[0] + '.' + last_name
+
+    existing_logins = {row[0] for row in SessionLocal().query(Employee.login).all()}
+
+    counter = 2
+
+    base = base.strip(".-") or "user"
+    login = base
+    counter = 2
+    while login in existing_logins:
+        login = f"{base}{counter}"
+        counter += 1
 
     temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
 
