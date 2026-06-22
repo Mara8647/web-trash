@@ -6,20 +6,21 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <div class="text-center mt-5">
-            <h1>Добро пожаловать в VsAccessPanel</h1>
-            <div class="container">
-                <div class="row pt-5">
-                    <div class="col-sm">
-                        <a href="/register" class="btn-primary btn btn-lg">Cоздать сотрудника</a>
-                    </div>
+        <div class="container mt-3">
+            <h2  style="text-align: center;">Добро пожаловать в VS Access Panel</h2>
+            <form method="post">
+                <div class="mt-5">
+                    <label for="login">Логин</label>
+                    <input type="text" id="login" class="form-control" name="login">
                 </div>
-                <div class="row pt-3">
-                    <div class="col-sm">
-                        <a href="/login" class="btn-primary btn btn-lg">Войти</a>
-                    </div>
+                <div class="mt-3">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="login" class="form-control" name="password">
                 </div>
-            </div>
+                <div class="mt-5 text-center">
+                    <button type="submit" class="btn btn-lg" style="background-color: #517be4; color: #ffffff;">Войти</button>
+                </div>
+            </form>
         </div>
     </body>
 </html>

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import transliterate
 import random
 import string
-from db_actions import init_db, add_employee
+from db_actions import init_db, add_employee, get_user
 import datetime
 
 app = Flask(__name__, template_folder='../templates')
@@ -19,11 +19,20 @@ def create_login(name):
     return login, temp_password
 
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def index():
+    if request.method == "POST":
+        login = request.form.get("login")
+        password = request.form.get("password")
+
+        access = get_user(login, password)
+
+        if access == 'admin':
+            return render_template('main_admin.html')
+
     return render_template('index.html')
 
-@app.route("/register", methods=["POST", "GET"])
+@app.route("/create_employee", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
         full_name = request.form.get("full_name")
@@ -45,17 +54,7 @@ def register():
 
         return render_template('employee_created.html', login=login, email=email, temp_password=temp_password, role=role)
 
-    return render_template('register_page.html')
-
-@app.route("/login", methods=["POST", "GET"])
-def login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        session['role'] = get_user(username, password)
-
-    return render_template('login_page.html')
+    return render_template('create_employee.html')
 
 if __name__ == "__main__":
     init_db()

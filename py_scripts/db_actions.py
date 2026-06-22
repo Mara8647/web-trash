@@ -26,8 +26,9 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    role: Mapped[str] = mapped_column(String(64))
+    login: Mapped[str] = mapped_column(String(64))
     password: Mapped[str] = mapped_column(String(64))
+    access: Mapped[str] = mapped_column(String(64))
 
 
 class Role(Base):
@@ -108,14 +109,22 @@ def get_session() -> Session:
 def init_db() -> None:
     Base.metadata.create_all(engine)
     with SessionLocal() as session:
-        admin_password = os.getenv("ADMIN_PASSWORD")
-        admin_user = User(
-            role="admin",
-            password=admin_password
-        )
+        with engine.connect() as conn:
+            admin_login = os.getenv("ADMIN_LOGIN")
+            admin_password = os.getenv("ADMIN_PASSWORD")
 
-        session.add(admin_user)
-        session.commit()
+            stmt = select(User).where(User.login == admin_login)
+            result = conn.execute(stmt).fetchone()
+
+            if result == None:
+                admin_user = User(
+                    login=admin_login,
+                    password=admin_password,
+                    access="admin"
+                )
+
+                session.add(admin_user)
+                session.commit()
 
     seed_roles()
 
@@ -237,5 +246,12 @@ def add_employee(full_name, login, department, position, manager, start_date, em
             session.commit()
 
             return role.name
+
+def get_user(login, password):
+    with engine.connect() as conn:
+        stmt = select(User).where(User.login == login)
+        result = conn.execute(stmt).fetchone()
+
+        return result[3]
 
 init_db()
