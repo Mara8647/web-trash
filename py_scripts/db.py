@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import bcrypt
 from dotenv import load_dotenv
 from datetime import datetime
 from typing import Optional
@@ -112,6 +113,8 @@ def init_db() -> None:
         with engine.connect() as conn:
             admin_login = os.getenv("ADMIN_LOGIN")
             admin_password = os.getenv("ADMIN_PASSWORD")
+            salt = bcrypt.gensalt(rounds=12)
+            hashed_password = bcrypt.hashpw(admin_password.encode('utf-8'), salt)
 
             stmt = select(User).where(User.login == admin_login)
             result = conn.execute(stmt).fetchone()
@@ -119,7 +122,7 @@ def init_db() -> None:
             if result == None:
                 admin_user = User(
                     login=admin_login,
-                    password=admin_password,
+                    password=hashed_password,
                     access="admin"
                 )
 
@@ -252,6 +255,9 @@ def get_user(login, password):
         stmt = select(User).where(User.login == login)
         result = conn.execute(stmt).fetchone()
 
-        return result[3]
+        if bcrypt.checkpw(password.encode('utf-8'), hashed_password=result[2]):
+            return result[3]
+        else:
+            return False
 
 init_db()

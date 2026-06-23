@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 import transliterate
 import random
 import string
@@ -59,6 +59,8 @@ def index():
                     logs=logs,
                     roles=roles,
                 )
+        else:
+            return render_template('index_wrong.html')
 
     return render_template('index.html')
 
