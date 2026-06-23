@@ -23,7 +23,7 @@
       <div class="step-grid">
         {% set steps = [('ad','Active Directory', employee.ad_status), ('mail','Почта', employee.mail_status), ('vpn','VPN', employee.vpn_status), ('onec','1С', employee.onec_status), ('bitrix','Bitrix24', employee.bitrix_status)] %}
         {% for key, title, status in steps %}
-          <div class="">
+          <div>
             <div>
               <hr>
               <strong>{{ title }}</strong>
@@ -32,7 +32,7 @@
             {% if status != 'Не требуется' and status != 'Готово' and employee.status != 'Уволен / отключен' %}
             <form method="post" action="{{ url_for('employee_run_step', employee_id=employee.id, module=key) }}">
               <button class="btn btn-sm btn-outline-primary">Выполнить</button>
-              </form>
+            </form>
             {% endif %}
           </div>
         {% endfor %}
