@@ -53,7 +53,7 @@
         <hr>
             <div class="p-2">
                 {% for log in logs %}
-                <div class="timeline-item">
+                <div class="ps-2">
                     <strong>{{ log.module }}</strong> · {{ log.action }}
                     <div class="text-secondary">{{ log.created_at.strftime('%d.%m %H:%M') }} — {{ log.status }}</div>
                 </div>
