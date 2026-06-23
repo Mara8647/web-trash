@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.full_name }} · VsAccessPanel{% endblock %}
+{% block content %}
+<style>
+  .created-card { max-width: 880px; margin: 30px auto; background: white; border: 1px solid var(--line); border-radius: 30px; padding: 38px; text-align: center; box-shadow: 0 20px 50px rgba(23,32,51,.08); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-head h3, .panel-card h3 { font-size: 18px; font-weight: 800; margin: 0; }
+  .panel-card { padding: 24px; border: 2px solid rgb(223, 223, 223); border-radius: 10px;}
+</style>
+<div class="row g-4 p-3">
+  <div class="col-lg-8">
+    <div class="profile-card mb-4">
+      <div class="flex-grow-1">
+        <h2>{{ employee.full_name }}</h2>
+        <div class="text-secondary">{{ employee.position or 'Должность не указана' }} · {{ employee.department or 'Отдел не указан' }}</div>
+        <div class="mt-2"><code>{{ employee.login }}</code> · {{ employee.email }}</div>
+      </div>
+      <div>{% include "partials/status_badge.html" with context %}</div>
+    </div>
+
+    <div class="panel-card mb-4">
+      <div class="card-head"><h3>Этапы создания доступов</h3></div>
+      <div class="step-grid">
+        {% set steps = [('ad','Active Directory', employee.ad_status), ('mail','Почта', employee.mail_status), ('vpn','VPN', employee.vpn_status), ('onec','1С', employee.onec_status), ('bitrix','Bitrix24', employee.bitrix_status)] %}
+        {% for key, title, status in steps %}
+          <div class="step-card">
+            <div>
+              <strong>{{ title }}</strong>
+              <div class="small text-secondary">{{ status }}</div>
+            </div>
+            {% if status != 'Не требуется' and status != 'Готово' and employee.status != 'Уволен / отключен' %}
+              <form method="post" action="{{ url_for('employee_run_step', employee_id=employee.id, module=key) }}">
+                <button class="btn btn-sm btn-outline-primary">Выполнить</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <div class="card-head"><h3>Журнал сотрудника</h3></div>
+      <div class="timeline">
+        {% for log in logs %}
+          <div class="timeline-item">
+            <strong>{{ log.module }}</strong> — {{ log.action }}
+            <div>{{ log.message }}</div>
+            <div class="small text-secondary">{{ log.created_at.strftime('%d.%m.%Y %H:%M') }} · {{ log.status }} · {{ log.actor }}</div>
+          </div>
+        {% else %}
+          <div class="text-secondary">Журнал пуст.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="panel-card mb-4">
+      <h3>Роль и группы</h3>
+      <div class="detail-line"><span>Роль: </span><strong>{{ employee.role.name }}</strong></div>
+      <div class="detail-line"><span>AD-группы: </span><small>{{ employee.role.ad_groups }}</small></div>
+      <div class="detail-line"><span>1С-группы: </span><small>{{ employee.role.onec_groups }}</small></div>
+      <div class="detail-line"><span>VPN-профиль: </span><small>{{ employee.role.vpn_profile or 'Не задан' }}</small></div>
+    </div>
+
+    <div class="panel-card danger-zone">
+        <h3>Увольнение / отключение</h3>
+        <p class="text-secondary">В MVP кнопка ставит статусы отключения. Боевой модуль должен отключать AD, VPN, почту, 1С и Bitrix24.</p>
+        <form method="post" action="{{ url_for('employee_disable', employee_id=employee.id) }}">
+            <button class="btn btn-outline-danger w-100" {% if employee.status == 'Уволен / отключен' %}disabled{% endif %}>Отключить сотрудника</button>
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

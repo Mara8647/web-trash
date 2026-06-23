@@ -1,12 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Сотрудники{% endblock %}
 {% block content %}
+<style>
+    .table thead th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; border-bottom-color: var(--line); }
+    .table td { border-bottom-color: var(--line); }
+</style>
 <div>
-    <table class="table align-middle table-hover">
+    <table class="table align-middle table-hover rounded">
         <thead><tr><th>Сотрудник</th><th>Роль</th><th>AD</th><th>Почта</th><th>VPN</th><th>1С</th><th>Статус</th></tr></thead>
         <tbody>
         {% for employee in employees %}
         <tr>
-            <td>{{ employee.login }}</td>
+            <td><a class="fw-semibold" href="{{ url_for('employee_detail', employee_id=employee.id) }}">{{ employee.full_name }}</a><div class="small text-secondary"><code>{{ employee.login }}</code> · {{ employee.email }}</div></td>
             <td>{{ employee.role.name }}</td>
             <td>{{ employee.ad_status }}</td>
             <td>{{ employee.mail_status }}</td>

@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash, url_for
 import transliterate
 import random
 import string
-from db import init_db, add_employee, get_user, SessionLocal, Employee, Role
+from db import init_db, add_employee, get_user, SessionLocal, Employee, Role, AuditLog
+from integrations import run_demo_step, MODULE_TITLE, disable_employee
 from sqlalchemy import desc
 import datetime
 
@@ -81,6 +82,39 @@ def register():
         return render_template('employee_created.html', login=login, email=email, temp_password=temp_password, role=role)
 
     return render_template('create_employee.html')
+
+@app.route("/employees/<int:employee_id>")
+def employee_detail(employee_id: int):
+    with SessionLocal() as session:
+        employee = session.get(Employee, employee_id)
+        if not employee:
+            flash("Сотрудник не найден.", "warning")
+            return redirect(url_for("employees"))
+        logs = (
+            session.query(AuditLog)
+            .filter(AuditLog.employee_id == employee.id)
+            .order_by(desc(AuditLog.created_at))
+            .all()
+        )
+        return render_template("employee_detail.html", employee=employee, logs=logs)
+
+@app.post("/employees/<int:employee_id>/run/<module>")
+def employee_run_step(employee_id: int, module: str):
+    try:
+        run_demo_step(employee_id, module)
+        flash(f"Этап '{MODULE_TITLE.get(module, module)}' выполнен в демо-режиме.", "success")
+    except Exception as exc:
+        flash(f"Ошибка выполнения этапа: {exc}", "danger")
+    return redirect(url_for("employee_detail", employee_id=employee_id))
+
+@app.post("/employees/<int:employee_id>/disable")
+def employee_disable(employee_id: int):
+    try:
+        disable_employee(employee_id)
+        flash("Сотрудник отключен в MVP-режиме.", "success")
+    except Exception as exc:
+        flash(f"Ошибка отключения: {exc}", "danger")
+    return redirect(url_for("employee_detail", employee_id=employee_id))
 
 if __name__ == "__main__":
     init_db()
