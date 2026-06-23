@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Роли{% endblock %}
+{% block content %}
+<div class="row g-4 p-3">
+  {% for role in roles %}
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="d-flex justify-content-between align-items-start gap-3 p-2">
+            <div>
+              <h3>{{ role.name }}</h3>
+              <p class="text-secondary">{{ role.description }}</p>
+            </div>
+            <span class="badge rounded-pill text-bg-light">{{ role.code }}</span>
+          </div>
+          <div class="detail-line ps-2"><span>Отдел по умолчанию: </span><strong>{{ role.department_default }}</strong></div>
+          <div class="detail-line ps-2"><span>AD: </span><small>{{ role.ad_groups }}</small></div>
+          <div class="detail-line ps-2"><span>1С: </span><small>{{ role.onec_groups }}</small></div>
+          <div class="detail-line ps-2"><span>VPN: </span><small>{{ role.vpn_profile or 'не требуется' }}</small></div>
+        </div>
+      </div>
+  {% endfor %}
+</div>
+{% endblock %}

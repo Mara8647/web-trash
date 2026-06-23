@@ -41,19 +41,47 @@ def index():
         access = get_user(login, password)
 
         if access == 'admin':
-            q = request.args.get("q", "").strip()
-            status = request.args.get("status", "").strip()
             with SessionLocal() as session:
-                query = session.query(Employee).join(Role).order_by(desc(Employee.created_at))
-                if q:
-                    like = f"%{q}%"
-                    query = query.filter((Employee.full_name.ilike(like)) | (Employee.login.ilike(like)) | (Employee.department.ilike(like)))
-                if status:
-                    query = query.filter(Employee.status == status)
-                items = query.all()
-                return render_template("employees.html", employees=items, q=q, status=status)
+                total = session.query(Employee).count()
+                active = session.query(Employee).filter(Employee.status != "Уволен / отключен").count()
+                ready = session.query(Employee).filter(Employee.status == "Готово").count()
+                errors = session.query(Employee).filter(Employee.status == "Ошибка").count()
+                employees = session.query(Employee).order_by(desc(Employee.created_at)).limit(6).all()
+                logs = session.query(AuditLog).order_by(desc(AuditLog.created_at)).limit(8).all()
+                roles = session.query(Role).filter(Role.is_active == True).order_by(Role.name).all()  # noqa: E712
+                return render_template(
+                    "dashboard.html",
+                    total=total,
+                    active=active,
+                    ready=ready,
+                    errors=errors,
+                    employees=employees,
+                    logs=logs,
+                    roles=roles,
+                )
 
     return render_template('index.html')
+
+@app.route("/dashboard")
+def dashboard():
+    with SessionLocal() as session:
+        total = session.query(Employee).count()
+        active = session.query(Employee).filter(Employee.status != "Уволен / отключен").count()
+        ready = session.query(Employee).filter(Employee.status == "Готово").count()
+        errors = session.query(Employee).filter(Employee.status == "Ошибка").count()
+        employees = session.query(Employee).order_by(desc(Employee.created_at)).limit(6).all()
+        logs = session.query(AuditLog).order_by(desc(AuditLog.created_at)).limit(8).all()
+        roles = session.query(Role).filter(Role.is_active == True).order_by(Role.name).all()  # noqa: E712
+        return render_template(
+            "dashboard.html",
+            total=total,
+            active=active,
+            ready=ready,
+            errors=errors,
+            employees=employees,
+            logs=logs,
+            roles=roles,
+        )
 
 @app.route("/employees")
 def employees():
@@ -125,6 +153,12 @@ def employee_disable(employee_id: int):
     except Exception as exc:
         flash(f"Ошибка отключения: {exc}", "danger")
     return redirect(url_for("employee_detail", employee_id=employee_id))
+
+@app.route("/roles")
+def roles():
+    with SessionLocal() as session:
+        items = session.query(Role).order_by(Role.name).all()
+        return render_template("roles.html", roles=items)
 
 if __name__ == "__main__":
     init_db()

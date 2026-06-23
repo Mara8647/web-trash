@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Панель{% endblock %}
+{% block content %}
+<div class="row ps-3 g-3 pt-3 container">
+    <div class="col-md-2"><div class="card"><span>Всего: </span><strong>{{ total }}</strong></div></div>
+    <div class="col-md-2"><div class="card"><span>Активные: </span><strong>{{ active }}</strong></div></div>
+    <div class="col-md-2"><div class="card"><span>Готово: </span><strong>{{ ready }}</strong></div></div>
+    <div class="col-md-2"><div class="card"><span>Ошибки: </span><strong>{{ errors }}</strong></div></div>
+</div>
+
+<div class="row g-4 p-3">
+    <div class="col-lg-8">
+        <div class="card container p-2">
+            <h3>Последние сотрудники</h3>
+            <a href="{{ url_for('employees') }}">Все сотрудники</a>
+            <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>ФИО</th><th>Роль</th><th>Логин</th><th>Статус</th></tr></thead>
+                <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td><a class="fw-semibold" href="{{ url_for('employee_detail', employee_id=employee.id) }}">{{ employee.full_name }}</a><div class="small text-secondary">{{ employee.department }}</div></td>
+                    <td>{{ employee.role.name }}</td>
+                    <td><code>{{ employee.login }}</code></td>
+                    <td>{% include "partials/status_badge.html" with context %}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-secondary">Пока нет сотрудников. Создайте первого.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-lg-4">
+    <div class="card mb-4">
+        <div class="p-2"><h3>Роли</h3><a href="{{ url_for('roles') }}">Открыть</a></div>
+        <div class="role-list">
+            {% for role in roles %}
+            <div class="p-2"><span>{{ role.name }}: </span><small>{{ role.department_default }}</small></div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="p-2"><h3>Журнал</h3></div>
+            <div class="p-2">
+                {% for log in logs %}
+                <div class="timeline-item">
+                    <strong>{{ log.module }}</strong> · {{ log.action }}
+                    <div class="text-secondary">{{ log.created_at.strftime('%d.%m %H:%M') }} — {{ log.status }}</div>
+                </div>
+                {% else %}
+                <div class="text-secondary">Журнал пока пуст.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,22 +9,23 @@
     <style>
     </style>
     <body>
-        <nav class="navbar navbar-expand-sm navbar-dark" style="background: linear-gradient(45deg, #517be4 0%, #200d4e 100%);">
+        <nav class="navbar navbar-expand-sm navbar-dark" style="background: linear-gradient(45deg, #517be4 0%, #000000 70%);">
             <div class="container-fluid">
-                <a class="navbar-brand border ps-2 pe-2" style="border-radius: 10px; background-color: #ffffff22;" href="#">VS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                    <ul class="navbar-nav">
-                        <li class="nav-item p-1">
-                            <a style="border: #ffffff7c solid; border-radius: 5pt; color:#ffffff" class="nav-link" href="{{ url_for('employees')}}">Сотрудники</a>
-                        </li>
-                        <li class="nav-item p-1">
-                            <a style="border: #ffffff7c solid; border-radius: 5pt; color:#ffffff" class="nav-link" href="/create_employee">Создать сотрудника</a>
-                        </li>
-                    </ul>
-                </div>
+                <a class="navbar-brand border ps-2 pe-2" style="border-radius: 10px; background-color: #ffffff22;" href="#"><b>VS</b></a>
+                <ul class="navbar-nav">
+                    <li class="nav-item p-1">
+                        <a style="border: #ffffff7c solid; border-radius: 5pt; color:#ffffff" class="nav-link" href="/dashboard">Панель</a>
+                    </li>
+                    <li class="nav-item p-1">
+                        <a style="border: #ffffff7c solid; border-radius: 5pt; color:#ffffff" class="nav-link" href="/employees">Сотрудники</a>
+                    </li>
+                    <li class="nav-item p-1">
+                        <a style="border: #ffffff7c solid; border-radius: 5pt; color:#ffffff" class="nav-link" href="/create_employee">Создать сотрудника</a>
+                    </li>
+                    <li class="nav-item p-1">
+                        <a style="border: #ffffff7c solid; border-radius: 5pt; color:#ffffff" class="nav-link" href="/roles">Роли</a>
+                    </li>
+                </ul>
             </div>
         </nav>
         {% block content %}{% endblock %}
