@@ -41,7 +41,17 @@ def index():
         access = get_user(login, password)
 
         if access == 'admin':
-            return render_template('base.html')
+            q = request.args.get("q", "").strip()
+            status = request.args.get("status", "").strip()
+            with SessionLocal() as session:
+                query = session.query(Employee).join(Role).order_by(desc(Employee.created_at))
+                if q:
+                    like = f"%{q}%"
+                    query = query.filter((Employee.full_name.ilike(like)) | (Employee.login.ilike(like)) | (Employee.department.ilike(like)))
+                if status:
+                    query = query.filter(Employee.status == status)
+                items = query.all()
+                return render_template("employees.html", employees=items, q=q, status=status)
 
     return render_template('index.html')
 
