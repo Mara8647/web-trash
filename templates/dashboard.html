@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Панель{% endblock %}
 {% block content %}
+<style>
+    .created-card { max-width: 880px; background: white; border: 1px solid var(--line); border-radius: 30px; box-shadow: 20px 20px 50px 12px rgba(23,32,51,.08); }
+    .card-head { display: flex; justify-content: space-between;}
+    .card-head h3{ font-size: 18px; font-weight: 800; margin: 0; }
+</style>
+
 <div class="row ps-3 g-3 pt-3 container">
-    <div class="col-md-2"><div class="card"><span>Всего: </span><strong>{{ total }}</strong></div></div>
-    <div class="col-md-2"><div class="card"><span>Активные: </span><strong>{{ active }}</strong></div></div>
-    <div class="col-md-2"><div class="card"><span>Готово: </span><strong>{{ ready }}</strong></div></div>
-    <div class="col-md-2"><div class="card"><span>Ошибки: </span><strong>{{ errors }}</strong></div></div>
+    <div class="col-md-2"><div class="created-card p-2"><span>Всего: </span><strong>{{ total }}</strong></div></div>
+    <div class="col-md-2"><div class="created-card p-2"><span>Активные: </span><strong>{{ active }}</strong></div></div>
+    <div class="col-md-2"><div class="created-card p-2"><span>Готово: </span><strong>{{ ready }}</strong></div></div>
+    <div class="col-md-2"><div class="created-card p-2"><span>Ошибки: </span><strong>{{ errors }}</strong></div></div>
 </div>
 
 <div class="row g-4 p-3">
     <div class="col-lg-8">
-        <div class="card container p-2">
+        <div class="container p-2">
             <h3>Последние сотрудники</h3>
             <a href="{{ url_for('employees') }}">Все сотрудники</a>
             <div class="table-responsive">
@@ -33,16 +39,18 @@
     </div>
 </div>
 <div class="col-lg-4">
-    <div class="card mb-4">
-        <div class="p-2"><h3>Роли</h3><a href="{{ url_for('roles') }}">Открыть</a></div>
+    <div class="created-card mb-4">
+        <div class="p-3"><h3>Роли</h3><a href="{{ url_for('roles') }}">Открыть</a></div>
+        <hr>
         <div class="role-list">
             {% for role in roles %}
-            <div class="p-2"><span>{{ role.name }}: </span><small>{{ role.department_default }}</small></div>
+            <div class="p-3"><span>{{ role.name }}: </span><small>{{ role.department_default }}</small></div>
             {% endfor %}
         </div>
     </div>
-    <div class="card">
-        <div class="p-2"><h3>Журнал</h3></div>
+    <div class="created-card">
+        <div class="p-3"><h3>Журнал</h3></div>
+        <hr>
             <div class="p-2">
                 {% for log in logs %}
                 <div class="timeline-item">
