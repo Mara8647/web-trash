@@ -208,10 +208,11 @@ def seed_roles() -> None:
                 session.add(Role(**item))
         session.commit()
 
-def add_employee(full_name, login, department, position, manager, start_date, email, role_id):
+def add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id):
     with engine.connect() as conn:
         stmt = select(Role).where(Role.id == role_id)
         result = conn.execute(stmt).fetchone()
+        print(result)
         
         with SessionLocal() as session:
             new_employee = Employee(
@@ -223,15 +224,18 @@ def add_employee(full_name, login, department, position, manager, start_date, em
                 manager=manager,
                 start_date=start_date,
                 status="Новый",
-                need_email=result[9],
-                need_vpn=result[10],
-                need_onec=result[11],
-                need_bitrix=result[12],
+                need_email=need_email,
+                need_vpn=need_vpn,
+                need_onec=need_onec,
+                need_bitrix=need_bitrix,
+                mail_status="Ожидает" if need_email else "Не требуется",
+                vpn_status="Ожидает" if need_vpn else "Не требуется",
+                onec_status="Ожидает" if need_onec else "Не требуется",
+                bitrix_status="Ожидает" if need_bitrix else "Не требуется",
                 role_id=role_id
             )
 
             session.add(new_employee)
-            session.flush()
             
             role = session.get(Role, role_id)
 

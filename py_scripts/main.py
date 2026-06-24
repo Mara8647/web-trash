@@ -107,6 +107,10 @@ def register():
         position = request.form.get("position")
         manager = request.form.get("manager")
         start_date = request.form.get("start_date")
+        need_email = request.form.get("need_email") == "on"
+        need_vpn = request.form.get("need_vpn") == "on"
+        need_onec = request.form.get("need_onec") == "on"
+        need_bitrix = request.form.get("need_bitrix") == "on"
         email_domain = request.form.get("email_domain")
         role_id = request.form.get("role_id")
         
@@ -117,7 +121,7 @@ def register():
         start_date = start_date.split("-")
         start_date = datetime.datetime(int(start_date[0]), int(start_date[1]), int(start_date[2]))
 
-        role = add_employee(full_name, login, department, position, manager, start_date, email, role_id)
+        role = add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id)
 
         return render_template('employee_created.html', login=login, email=email, temp_password=temp_password, role=role)
 
