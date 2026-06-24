@@ -1,4 +1,4 @@
 .env
 .venv/
 __pycache__/
-py_scripts/vs_access_panel.sqlite3
+vs_access_panel.sqlite3
