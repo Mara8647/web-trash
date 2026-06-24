@@ -1,25 +1,11 @@
 services:
-  db:
-    image: postgres:latest
-    container_name: psql_db
-    environment:
-      POSTGRES_USER: "main_db"
-      POSTGRES_PASSWORD: "123"
-      POSTGRES_DB: "main_db"
-    volumes:
-      - ./psql_data:/var/lib/postgresql
-
   web_app:
     image: vs:latest
     container_name: flask_app
     environment:
-      DB_USER: "main_db"
-      DB_PASSWORD: "123"
-      DB_NAME: "main_db"
-      DB_HOST: "db"
-      DB_PORT: "5432"
+      ADMIN_LOGIN = "web-admin"
+      ADMIN_PASSWORD = "secret123"
     ports:
-      - 50:50
-
-volumes:
-  psql_data:
+      - 50170:50170
+    volumes:
+      - ./py_scripts/vs_access_panel.sqlite3: /app/py_scripts/vs_access_panel.sqlite3
