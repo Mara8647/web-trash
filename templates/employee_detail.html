@@ -57,10 +57,10 @@
   <div class="col-lg-4">
     <div class="created-card mb-4">
       <h3>Роль и группы</h3>
-      <div class="detail-line"><span>Роль: </span><strong>{{ employee.role.name }}</strong></div>
-      <div class="detail-line"><span>AD-группы: </span><small>{{ employee.role.ad_groups }}</small></div>
-      <div class="detail-line"><span>1С-группы: </span><small>{{ employee.role.onec_groups }}</small></div>
-      <div class="detail-line"><span>VPN-профиль: </span><small>{{ employee.role.vpn_profile or 'Не задан' }}</small></div>
+      <div><span>Роль: </span><strong>{{ employee.role.name }}</strong></div>
+      <div><span>AD-группы: </span><small>{{ employee.role.ad_groups }}</small></div>
+      <div><span>1С-группы: </span><small>{{ employee.role.onec_groups }}</small></div>
+      <div><span>VPN-профиль: </span><small>{{ employee.role.vpn_profile or 'Не задан' }}</small></div>
     </div>
 
     <div class="created-card danger-zone">

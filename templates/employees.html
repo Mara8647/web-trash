@@ -2,9 +2,27 @@
 {% block title %}Сотрудники{% endblock %}
 {% block content %}
 <style>
-    .table thead th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; border-bottom-color: var(--line); }
-    .table td { border-bottom-color: var(--line); }
+    .table thead th { color:  black; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; border-bottom-color: rgb(163, 163, 163); }
+    .table td { border-bottom-color: rgb(163, 163, 163); }
 </style>
+<form class="p-2 row g-2 align-items-end">
+    <div class="col-md-7">
+        <label class="form-label">Поиск</label>
+        <input class="form-control" name="q" value="{{ q }}" placeholder="ФИО, логин, отдел">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Статус</label>
+        <select class="form-select" name="status">
+            <option value="">Все</option>
+            {% for item in ['Новый', 'Частично готово', 'Готово', 'Уволен / отлючен', 'Ошибка'] %}
+                 <option value="{{ item }}" {% if status == item %} selected {% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary">Найти</button>
+    </div>
+</form>
 <div class="p-2">
     <table class="table align-middle table-hover rounded">
         <thead><tr><th>Сотрудник</th><th>Роль</th><th>AD</th><th>Почта</th><th>VPN</th><th>1С</th><th>Статус</th></tr></thead>
