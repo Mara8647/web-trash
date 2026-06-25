@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from db import AuditLog, Employee, SessionLocal
+from py_scripts.db import AuditLog, Employee, SessionLocal
 
 MODULE_STATUS_FIELD = {
     "ad": "ad_status",

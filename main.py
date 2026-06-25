@@ -108,6 +108,11 @@ def dashboard():
             logs=logs,
             roles=roles,
         )
+    
+@app.route("/integrations")
+@login_required
+def integrations():
+    return render_template('integrations.html')
 
 @app.route("/employees")
 @login_required

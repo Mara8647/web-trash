@@ -3,10 +3,12 @@ FROM debian:latest
 RUN mkdir /app
 WORKDIR /app
 
+RUN mkdir -p ./py_scripts ./ps1_scripts ./templates ./templates/partials
 COPY py_scripts/* ./py_scripts
 COPY ps1_scripts/* ./ps1_scripts
 COPY templates/* ./templates/
-RUN touch ./py_scripts/vs_access_panel.sqlite3
+COPY templates/partials/* ./templates/partials
+RUN touch /app/vs_access_panel.sqlite3
 
 EXPOSE 50170
 
