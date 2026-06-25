@@ -13,32 +13,32 @@
 <form method="POST" id="mainForm">
     <div class="mb-3 mt-3 container">
         <label class="form-label">ФИО</label>
-        <input type="text" class="form-control" name="full_name" placeholder="Например: Иванов Иван Иванович" required autofocus>
+        <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Например: Иванов Иван Иванович" required autofocus>
     </div>
 
     <div class="mb-3 mt-3 container">
         <label class="form-label">Отдел</label>
-        <input type="text" class="form-control" name="department" placeholder="Например: Отдел продаж" required >
+        <input type="text" class="form-control" name="department" id="department" placeholder="Например: Отдел продаж" required >
     </div>
 
     <div class="mb-3 mt-3 container">
         <label class="form-label">Должность</label>
-        <input type="text" class="form-control" name="position" placeholder="Например: Менеджер продаж" required >
+        <input type="text" class="form-control" name="position" id="position" placeholder="Например: Менеджер продаж" required >
     </div>
 
     <div class="mb-3 mt-3 container">
         <label class="form-label">Руководитель</label>
-        <input type="text" class="form-control" name="manager" placeholder="Например: Петров Пётр" required >
+        <input type="text" class="form-control" name="manager" id="manager" placeholder="Например: Петров Пётр" required >
     </div>
 
     <div class="mb-3 mt-3 container">
         <label class="form-label">Дата выхода</label>
-        <input type="date" class="form-control" name="start_date" required>
+        <input type="date" class="form-control" name="start_date" id="start_date" required>
     </div>
 
     <div class="mb-3 mt-3 container">
         <label class="form-label">Домен почты</label>
-        <input type="text" class="form-control" name="email_domain" placeholder="company.local" required>
+        <input type="text" class="form-control" name="email_domain" id="email_domain" placeholder="company.local" required>
     </div>
 
     <!-- Поле ролей -->
@@ -89,4 +89,61 @@
         <button type="submit" class="btn" style="background-color: #517be4; color: #ffffff" id="nextButton">Создать сотрудника</button>
     </div>
 </form>
+<script>
+    const textFields = ['full_name', 'department', 'position', 'manager', 'start_date', 'email_domain'];
+    const radioGroups = ['role_id'];
+    const checkboxes = ['need_email', 'need_vpn', 'need_onec', 'need_bitrix'];
+
+    // Restore and save text fields
+    textFields.forEach(field => {
+        const el = document.querySelector(`[name="${field}"]`);
+        if (!el) return;
+
+        const saved = localStorage.getItem(`employee_form_${field}`);
+        if (saved) el.value = saved;
+
+        el.addEventListener('input', () => {
+            localStorage.setItem(`employee_form_${field}`, el.value);
+        });
+    });
+
+    // Restore and save radio groups
+    radioGroups.forEach(group => {
+        const radios = document.querySelectorAll(`[name="${group}"]`);
+        if (!radios.length) return;
+
+        const saved = localStorage.getItem(`employee_form_${group}`);
+        if (saved) {
+            radios.forEach(radio => {
+                if (radio.value === saved) radio.checked = true;
+            });
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                localStorage.setItem(`employee_form_${group}`, radio.value);
+            });
+        });
+    });
+
+    // Restore and save checkboxes
+    checkboxes.forEach(field => {
+        const el = document.querySelector(`[name="${field}"]`);
+        if (!el) return;
+
+        const saved = localStorage.getItem(`employee_form_${field}`);
+        if (saved) el.checked = (saved === 'true');
+
+        el.addEventListener('change', () => {
+            localStorage.setItem(`employee_form_${field}`, el.checked);
+        });
+    });
+
+    // Clear all saved data on submit
+    document.getElementById('mainForm').addEventListener('submit', () => {
+        [...textFields, ...radioGroups, ...checkboxes].forEach(field => {
+            localStorage.removeItem(`employee_form_${field}`);
+        });
+    });
+</script>
 {% endblock %}
