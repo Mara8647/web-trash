@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, url_for, jsonify
-from flask import session as ss
+from flask import session as sess
 import transliterate
 import random
 import string
@@ -21,7 +21,7 @@ app.config['SESSION_PERMANENT'] = False
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in ss:
+        if 'user_id' not in sess:
             return redirect('/')
         return f(*args, **kwargs)
     return decorated_function
@@ -50,7 +50,7 @@ def create_login(name):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    ss.clear()
+    sess.clear()
     if request.method == "POST":
         login = request.form.get("login")
         password = request.form.get("password")
@@ -61,7 +61,7 @@ def index():
         else:
             user_id, access = user
 
-        ss["user_id"] = user_id
+        sess["user_id"] = user_id
 
         if access == 'admin':
             with SessionLocal() as session:
