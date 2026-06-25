@@ -81,6 +81,7 @@ class Employee(Base):
     role: Mapped[Role] = relationship(back_populates="employees")
 
     created_by: Mapped[str] = mapped_column(String(120), default="admin")
+    request_status: Mapped[str] = mapped_column(String(50), default="done")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     disabled_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
@@ -260,7 +261,7 @@ def get_user(login, password):
         result = conn.execute(stmt).fetchone()
 
         if bcrypt.checkpw(password.encode('utf-8'), hashed_password=result[2]):
-            return result[3]
+            return result[0], result[3]
         else:
             return False
 
