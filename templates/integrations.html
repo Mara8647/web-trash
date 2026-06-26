@@ -1,24 +1,48 @@
 {% extends 'base.html' %}
 {% block title %}Интеграции{% endblock %}
 {% block content %}
-<div class="mb-3 mt-3 container">
-    <label class="form-label">AD</label>
-    <input type="text" class="form-control" name="position" id="position" required >
-</div>
-<div class="mb-3 mt-3 container">
-    <label class="form-label">Mikrotik</label>
-    <input type="text" class="form-control" name="position" id="position" required >
-</div>
-<div class="mb-3 mt-3 container">
-    <label class="form-label">Почта</label>
-    <input type="text" class="form-control" name="position" id="position" required >
-</div>
-<div class="mb-3 mt-3 container">
-    <label class="form-label">1C</label>
-    <input type="text" class="form-control" name="position" id="position" required >
-</div>
-<div class="mb-3 mt-3 container">
-    <label class="form-label">Bitrix</label>
-    <input type="text" class="form-control" name="position" id="position" required >
+<div class="container ">
+    <form>
+        <div class="row row-cols-3 pt-3">
+            <div class="text-end pt-1">
+                <label class="form-label">AD</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" style="min-width: 380px">
+            </div>
+        </div>
+        <div class="row row-cols-3 pt-3">
+            <div class="text-end pt-1">
+                <label class="form-label">Mikrotik</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" style="min-width: 380px">
+            </div>
+        </div>
+        <div class="row row-cols-3 pt-3">
+            <div class="text-end pt-1">
+                <label class="form-label">Почта</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" style="min-width: 380px">
+            </div>
+        </div>
+        <div class="row row-cols-3 pt-3">
+            <div class="text-end pt-1">
+                <label class="form-label">1C</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" style="min-width: 380px">
+            </div>
+        </div>
+        <div class="row row-cols-3 pt-3">
+            <div class="text-end pt-1">
+                <label class="form-label">Bitrix</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" style="min-width: 380px">
+            </div>
+        </div>
+    </form>
 </div>
 {% endblock %}

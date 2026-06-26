@@ -200,6 +200,11 @@ def roles():
     with SessionLocal() as session:
         items = session.query(Role).order_by(Role.name).all()
         return render_template("roles.html", roles=items)
+    
+@app.route("/logout")
+def logout():
+    sess.clear()
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     init_db()
