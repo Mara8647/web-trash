@@ -1,0 +1,29 @@
+:root {
+  /* Глобальный цвет primary (для text-primary, bg-primary, ссылок, бордеров) */
+  --bs-primary: #fb65a1;
+  --bs-primary-rgb: 251, 101, 161; /* #fb65a1 в формате RGB */
+}
+
+/* Полное обновление для кнопок .btn-primary */
+.btn-primary {
+  --bs-btn-bg: #fb65a1;
+  --bs-btn-border-color: #fb65a1;
+  --bs-btn-hover-bg: #e0548e;         /* Чуть темнее при наведении */
+  --bs-btn-hover-border-color: #e0548e;
+  --bs-btn-active-bg: #c9467d;        /* Еще темнее при клике */
+  --bs-btn-active-border-color: #c9467d;
+  --bs-btn-disabled-bg: #fb65a1;
+  --bs-btn-disabled-border-color: #fb65a1;
+  --bs-btn-focus-shadow-rgb: 251, 101, 161; /* Цвет свечения при фокусе */
+}
+
+/* Обновление для контурных кнопок .btn-outline-primary */
+.btn-outline-primary {
+  --bs-btn-color: #fb65a1;
+  --bs-btn-border-color: #fb65a1;
+  --bs-btn-hover-bg: #fb65a1;
+  --bs-btn-hover-border-color: #fb65a1;
+  --bs-btn-active-bg: #fb65a1;
+  --bs-btn-active-border-color: #fb65a1;
+  --bs-btn-focus-shadow-rgb: 251, 101, 161;
+}

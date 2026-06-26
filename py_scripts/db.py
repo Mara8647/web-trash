@@ -11,7 +11,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, rela
 
 load_dotenv()
 
-DEFAULT_SQLITE_URL = "sqlite:///../vs_access_panel.sqlite3"
+DEFAULT_SQLITE_URL = "sqlite:///vs_access_panel.sqlite3"
 DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_SQLITE_URL)
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
