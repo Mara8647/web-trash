@@ -4,7 +4,7 @@ import transliterate
 import random
 import string
 from functools import wraps
-from py_scripts.db import init_db, add_employee, get_user, SessionLocal, Employee, Role, AuditLog
+from py_scripts.db import init_db, add_employee, get_user, SessionLocal, User, Employee, Role, AuditLog
 from py_scripts.integrations import run_demo_step, MODULE_TITLE, disable_employee
 from sqlalchemy import desc
 import os
@@ -109,6 +109,13 @@ def dashboard():
             roles=roles,
         )
     
+@app.route("/users")
+@login_required
+def users():
+    with SessionLocal() as session:
+        users = session.query(User)
+    return render_template('users.html', users=users)
+    
 @app.route("/integrations")
 @login_required
 def integrations():
@@ -131,7 +138,7 @@ def employees():
 
 @app.route("/create_employee", methods=["POST", "GET"])
 @login_required
-def register():
+def create_employee():
     if request.method == "POST":
         full_name = request.form.get("full_name")
         department = request.form.get("department")

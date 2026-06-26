@@ -1,11 +1,12 @@
 services:
   web_app:
-    image: vs:latest
+    image: vs-access-panel:latest
     container_name: flask_app
     environment:
-      ADMIN_LOGIN = "web-admin"
-      ADMIN_PASSWORD = "secret123"
+      ADMIN_LOGIN: "web-admin"
+      ADMIN_PASSWORD: "secret123"
+      APP_KEY: "uy578lhkg"
     ports:
-      - 50170:50170
+      - 5000:5000
     volumes:
-      - ./py_scripts/vs_access_panel.sqlite3: /app/py_scripts/vs_access_panel.sqlite3
+      - ./vs_access_panel.sqlite3:/app/vs_access_panel.sqlite3

@@ -260,9 +260,13 @@ def get_user(login, password):
         stmt = select(User).where(User.login == login)
         result = conn.execute(stmt).fetchone()
 
-        if bcrypt.checkpw(password.encode('utf-8'), hashed_password=result[2]):
-            return result[0], result[3]
-        else:
+        if result == None:
             return False
+        else:
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password=result[2]):
+                return result[0], result[3]
+            else:
+                return False
+            
 
 init_db()
