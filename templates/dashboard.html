@@ -48,6 +48,7 @@
             {% endfor %}
         </div>
     </div>
+    {% if access == 'admin' %}
     <div class="created-card">
         <div class="p-3"><h3>Журнал</h3></div>
         <hr>
@@ -63,5 +64,6 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

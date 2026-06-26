@@ -4,7 +4,7 @@ import transliterate
 import random
 import string
 from functools import wraps
-from py_scripts.db import init_db, add_employee, get_user, SessionLocal, User, Employee, Role, AuditLog
+from py_scripts.db import init_db, add_employee, add_user, get_user, SessionLocal, User, Employee, Role, AuditLog
 from py_scripts.integrations import run_demo_step, MODULE_TITLE, disable_employee
 from sqlalchemy import desc
 import os
@@ -63,7 +63,7 @@ def index():
 
         sess["user_id"] = user_id
 
-        if access == 'admin':
+        if access == 'admin' or access == "hr":
             with SessionLocal() as session:
                 total = session.query(Employee).count()
                 active = session.query(Employee).filter(Employee.status != "Уволен / отключен").count()
@@ -81,6 +81,7 @@ def index():
                     employees=employees,
                     logs=logs,
                     roles=roles,
+                    access=access
                 )
         else:
             return render_template('index_wrong.html')
@@ -115,6 +116,17 @@ def users():
     with SessionLocal() as session:
         users = session.query(User)
     return render_template('users.html', users=users)
+
+@app.route("/create_user", methods=['POST', 'GET'])
+@login_required
+def create_user():
+    if request.method == 'POST':
+        login = request.form.get("login")
+        password = request.form.get("password")
+        access = request.form.get("role_id")
+
+        add_user(login, password, access)
+    return render_template('create_user.html')
     
 @app.route("/integrations")
 @login_required

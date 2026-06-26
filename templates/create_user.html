@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Создание сотрудника{% endblock %}
+{% block content %}
+<form method="POST" id="mainForm">
+    <div class="mb-3 mt-3 container">
+        <label class="form-label">Логин</label>
+        <input type="text" class="form-control" name="login" required autofocus>
+    </div>
+    <div class="mb-3 mt-3 container">
+        <label class="form-label">Пароль</label>
+        <input type="password" class="form-control" name="password" required autofocus>
+    </div>
+
+    <!-- Поле ролей -->
+    <div class="container">
+        <ul class="list-group list-group-light">
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="role_id" value="admin">
+                Админ
+            </li>
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="role_id" value="hr">
+                HR
+            </li>
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="role_id" value="it">
+                IT-специалист
+            </li>
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="role_id" value="manager">
+                Руководитель отдела
+            </li>
+        </ul>
+    </div>
+
+    <div class="text-center pt-3 pb-3">
+        <button type="submit" class="btn btn-primary" id="nextButton">Создать пользователя</button>
+    </div>
+</form>
+<script>
+    const textFields = ['login', 'password'];
+    const radioGroups = ['role_id'];
+
+    // Restore and save text fields
+    textFields.forEach(field => {
+        const el = document.querySelector(`[name="${field}"]`);
+        if (!el) return;
+
+        const saved = localStorage.getItem(`employee_form_${field}`);
+        if (saved) el.value = saved;
+
+        el.addEventListener('input', () => {
+            localStorage.setItem(`employee_form_${field}`, el.value);
+        });
+    });
+
+    // Restore and save radio groups
+    radioGroups.forEach(group => {
+        const radios = document.querySelectorAll(`[name="${group}"]`);
+        if (!radios.length) return;
+
+        const saved = localStorage.getItem(`employee_form_${group}`);
+        if (saved) {
+            radios.forEach(radio => {
+                if (radio.value === saved) radio.checked = true;
+            });
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                localStorage.setItem(`employee_form_${group}`, radio.value);
+            });
+        });
+    });
+
+    // Clear all saved data on submit
+    document.getElementById('mainForm').addEventListener('submit', () => {
+        [...textFields, ...radioGroups].forEach(field => {
+            localStorage.removeItem(`employee_form_${field}`);
+        });
+    });
+</script>
+{% endblock %}

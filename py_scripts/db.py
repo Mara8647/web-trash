@@ -254,6 +254,20 @@ def add_employee(full_name, login, department, position, manager, start_date, ne
             session.commit()
 
             return role.name
+        
+def add_user(login, password, access):
+    with SessionLocal() as session:
+        salt = bcrypt.gensalt(rounds=12)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+
+        new_user = User(
+            login=login,
+            password=hashed_password,
+            access=access
+        )
+
+        session.add(new_user)
+        session.commit()
 
 def get_user(login, password):
     with engine.connect() as conn:
