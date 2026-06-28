@@ -2,3 +2,5 @@
 .venv/
 __pycache__/
 vs_access_panel.sqlite3
+cert.pem
+key.pem
