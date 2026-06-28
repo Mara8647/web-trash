@@ -134,6 +134,17 @@ def create_user():
 def integrations():
     return render_template('integrations.html', access=sess["access"])
 
+@app.route("/requests")
+@login_required
+def requests():
+    with SessionLocal() as session:
+        requests = session.query(Employee).filter(Employee.request_status == "pending")
+    return render_template('requests.html', requests=requests, access=sess["access"])
+
+@app.route("/api/handle_request", methods=['GET'])
+def handle_request():
+    print(":3")
+
 @app.route("/employees")
 @login_required
 def employees():
@@ -229,4 +240,4 @@ def logout():
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'))
+    app.run(debug=True, host='0.0.0.0', port=50, ssl_context=('cert.pem', 'key.pem'))

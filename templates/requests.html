@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Запросы{% endblock %}
+{% block content %}
+<style>
+    .created-card { max-width: 880px; background: white; border: 1px solid var(--line); border-radius: 30px; padding: 38px; box-shadow: 20px 20px 50px 12px rgba(23,32,51,.08); }
+    .card-head { display: flex; justify-content: space-between; margin-bottom: 16px; }
+    .card-head h3{ font-size: 18px; font-weight: 800; margin: 0; }
+</style>
+<div class="row g-4 p-3">
+  {% for request in requests %}
+      <div class="col-lg-6">
+        <div class="created-card">
+          <div class="d-flex justify-content-between align-items-start gap-3 p-2">
+            <div>
+              <h2>{{ request.full_name }}</h2>
+              <p class="text-secondary">Должность: {{ request.position }}</p>
+              <p class="text-secondary">Отдел: {{ request.department }}</p>
+              <p>Ожидает обработки</p>
+              {% if access=="admin" %}
+              <button class="btn btn-danger" id="rejectButton">Отклонить</button>
+              <button class="btn btn-success" id="approveButton">Принять</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+  {% endfor %}
+</div>
+{% endblock %}
