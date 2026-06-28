@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Создание сотрудника{% endblock %}
 {% block content %}
+{% if access=="admin" %}
 <form method="POST" id="mainForm">
     <div class="mb-3 mt-3 container">
         <label class="form-label">Логин</label>
@@ -80,4 +81,7 @@
         });
     });
 </script>
+{% else %}
+<h1 class="text-center">Эта страница только для админа</h1>
+{% endif %}
 {% endblock %}

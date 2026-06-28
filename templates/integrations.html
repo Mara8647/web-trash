@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Интеграции{% endblock %}
 {% block content %}
+{% if access=="admin" %}
 <div class="container ">
     <form>
         <div class="row row-cols-3 pt-3">
@@ -45,4 +46,9 @@
         </div>
     </form>
 </div>
+{% else %}
+<h1 class="text-center">
+    Эта страница только для админа
+</h1>
+{% endif %}
 {% endblock %}

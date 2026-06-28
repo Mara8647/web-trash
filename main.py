@@ -21,7 +21,7 @@ app.config['SESSION_PERMANENT'] = False
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in sess:
+        if 'access' not in sess:
             return redirect('/')
         return f(*args, **kwargs)
     return decorated_function
@@ -59,9 +59,9 @@ def index():
         if user == False:
             return render_template('index_wrong.html')
         else:
-            user_id, access = user
+            access = user
 
-        sess["user_id"] = user_id
+        sess['access'] = access
 
         if access == 'admin' or access == "hr":
             with SessionLocal() as session:
@@ -108,6 +108,7 @@ def dashboard():
             employees=employees,
             logs=logs,
             roles=roles,
+            access=sess['access']
         )
     
 @app.route("/users")
@@ -126,12 +127,12 @@ def create_user():
         access = request.form.get("role_id")
 
         add_user(login, password, access)
-    return render_template('create_user.html')
+    return render_template('create_user.html', access=sess["access"])
     
 @app.route("/integrations")
 @login_required
 def integrations():
-    return render_template('integrations.html')
+    return render_template('integrations.html', access=sess["access"])
 
 @app.route("/employees")
 @login_required
@@ -163,6 +164,7 @@ def create_employee():
         need_bitrix = request.form.get("need_bitrix") == "on"
         email_domain = request.form.get("email_domain")
         role_id = request.form.get("role_id")
+        actor = sess['access']
         
         login, temp_password = create_login(full_name)
         
@@ -171,7 +173,7 @@ def create_employee():
         start_date = start_date.split("-")
         start_date = datetime.datetime(int(start_date[0]), int(start_date[1]), int(start_date[2]))
 
-        role = add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id)
+        role = add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id, actor)
 
         return render_template('employee_created.html', login=login, email=email, temp_password=temp_password, role=role)
 
@@ -227,4 +229,4 @@ def logout():
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'))

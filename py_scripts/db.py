@@ -114,6 +114,7 @@ def init_db() -> None:
         with engine.connect() as conn:
             admin_login = os.getenv("ADMIN_LOGIN")
             admin_password = os.getenv("ADMIN_PASSWORD")
+            
             salt = bcrypt.gensalt(rounds=12)
             hashed_password = bcrypt.hashpw(admin_password.encode('utf-8'), salt)
 
@@ -209,51 +210,53 @@ def seed_roles() -> None:
                 session.add(Role(**item))
         session.commit()
 
-def add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id):
-    with engine.connect() as conn:
-        stmt = select(Role).where(Role.id == role_id)
-        result = conn.execute(stmt).fetchone()
-        print(result)
-        
-        with SessionLocal() as session:
-            new_employee = Employee(
-                full_name=full_name,
-                login=login,
-                email=email,
-                department=department,
-                position=position,
-                manager=manager,
-                start_date=start_date,
-                status="Новый",
-                need_email=need_email,
-                need_vpn=need_vpn,
-                need_onec=need_onec,
-                need_bitrix=need_bitrix,
-                mail_status="Ожидает" if need_email else "Не требуется",
-                vpn_status="Ожидает" if need_vpn else "Не требуется",
-                onec_status="Ожидает" if need_onec else "Не требуется",
-                bitrix_status="Ожидает" if need_bitrix else "Не требуется",
-                role_id=role_id
-            )
+def add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id, actor):
+    if actor == "admin":
+        request_status = "done"
+    else:
+        request_status = "pending"
+    
+    with SessionLocal() as session:
+        new_employee = Employee(
+            full_name=full_name,
+            login=login,
+            email=email,
+            department=department,
+            position=position,
+            manager=manager,
+            start_date=start_date,
+            status="Новый",
+            need_email=need_email,
+            need_vpn=need_vpn,
+            need_onec=need_onec,
+            need_bitrix=need_bitrix,
+            mail_status="Ожидает" if need_email else "Не требуется",
+            vpn_status="Ожидает" if need_vpn else "Не требуется",
+            onec_status="Ожидает" if need_onec else "Не требуется",
+            bitrix_status="Ожидает" if need_bitrix else "Не требуется",
+            role_id=role_id,
+            created_by=actor,
+            request_status=request_status
+        )
 
-            session.add(new_employee)
+        session.add(new_employee)
             
-            role = session.get(Role, role_id)
+        role = session.get(Role, role_id)
 
-            session.add(
-                AuditLog(
-                    employee_id=new_employee.id,
-                    actor="admin",
-                    module="Onboarding",
-                    action="Создание карточки сотрудника",
-                    status="Успешно",
-                    message=f"Создана карточка. Логин: {login}. Роль: {role.name}.",
-                )
+        session.add(
+            AuditLog(
+                employee_id=new_employee.id,
+                actor=actor,
+                module="Onboarding",
+                action="Создание карточки сотрудника",
+                status="Успешно",
+                message=f"Создана карточка. Логин: {login}. Роль: {role.name}.",
             )
+        )
 
-            session.commit()
+        session.commit()
 
-            return role.name
+        return role.name
         
 def add_user(login, password, access):
     with SessionLocal() as session:
@@ -278,7 +281,7 @@ def get_user(login, password):
             return False
         else:
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password=result[2]):
-                return result[0], result[3]
+                return result[3]
             else:
                 return False
             
