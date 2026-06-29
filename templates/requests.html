@@ -17,8 +17,12 @@
               <p class="text-secondary">Отдел: {{ request.department }}</p>
               <p>Ожидает обработки</p>
               {% if access=="admin" %}
-              <button class="btn btn-danger" id="rejectButton">Отклонить</button>
-              <button class="btn btn-success" id="approveButton">Принять</button>
+              <form method="POST" action="{{ url_for('handle_request', request_id=request.id, action='accept') }}">
+                <button type="submit" class="btn btn-success" name="approve">Принять</button>
+              </form>
+              <form method="POST" action="{{ url_for('handle_request', request_id=request.id, action='reject') }}">
+                <button type="submit" class="btn btn-danger" name="reject">Отклонить</button>
+              </form>
               {% endif %}
             </div>
           </div>

@@ -92,11 +92,11 @@ def index():
 @login_required
 def dashboard():
     with SessionLocal() as session:
-        total = session.query(Employee).count()
-        active = session.query(Employee).filter(Employee.status != "Уволен / отключен").count()
+        total = session.query(Employee).filter(Employee.request_status == "done").count()
+        active = session.query(Employee).filter(Employee.status != "Уволен / отключен").filter(Employee.request_status == "done").count()
         ready = session.query(Employee).filter(Employee.status == "Готово").count()
         errors = session.query(Employee).filter(Employee.status == "Ошибка").count()
-        employees = session.query(Employee).order_by(desc(Employee.created_at)).limit(6).all()
+        employees = session.query(Employee).filter(Employee.request_status == "done").order_by(desc(Employee.created_at)).limit(6).all()
         logs = session.query(AuditLog).order_by(desc(AuditLog.created_at)).limit(8).all()
         roles = session.query(Role).filter(Role.is_active == True).order_by(Role.name).all()  # noqa: E712
         return render_template(
@@ -141,9 +141,23 @@ def requests():
         requests = session.query(Employee).filter(Employee.request_status == "pending")
     return render_template('requests.html', requests=requests, access=sess["access"])
 
-@app.route("/api/handle_request", methods=['GET'])
+@app.route('/api/handle_request', methods=['POST', 'GET'])
+@login_required
 def handle_request():
-    print(":3")
+    action = request.args.get('action', '').strip()
+    request_id = request.args.get('request_id', '').strip()
+
+    with SessionLocal() as session:
+        if action == 'accept':
+            req = session.get(Employee, request_id)
+            req.request_status = 'done'
+        elif action == 'reject':
+            req = session.get(Employee, request_id)
+            session.delete(req)
+        
+        session.commit()
+    
+    return redirect(url_for("requests", requests=requests, access=sess['access']))
 
 @app.route("/employees")
 @login_required
@@ -151,7 +165,7 @@ def employees():
     q = request.args.get("q", "").strip()
     status = request.args.get("status", "").strip()
     with SessionLocal() as session:
-        query = session.query(Employee).join(Role).order_by(desc(Employee.created_at))
+        query = session.query(Employee).filter(Employee.request_status == "done").join(Role).order_by(desc(Employee.created_at))
         if q:
             like = f"%{q}%"
             query = query.filter((Employee.full_name.ilike(like)) | (Employee.login.ilike(like)) | (Employee.department.ilike(like)))
