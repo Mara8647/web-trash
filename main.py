@@ -92,7 +92,7 @@ def index():
 @login_required
 def dashboard():
     with SessionLocal() as session:
-        total = session.query(Employee).filter(Employee.request_status == "done").count()
+        total = session.query(Employee).count()
         active = session.query(Employee).filter(Employee.status != "Уволен / отключен").filter(Employee.request_status == "done").count()
         ready = session.query(Employee).filter(Employee.status == "Готово").count()
         errors = session.query(Employee).filter(Employee.status == "Ошибка").count()
@@ -254,4 +254,4 @@ def logout():
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True, host='0.0.0.0', port=50170, ssl_context=('cert.pem', 'key.pem'))
+    app.run(debug=True, host='0.0.0.0', port=500, ssl_context=('cert.pem', 'key.pem'))
