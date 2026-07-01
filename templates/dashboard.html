@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Панель{% endblock %}
 {% block content %}
-<style>
-    .created-card { max-width: 880px; background: white; border: 1px solid var(--line); border-radius: 30px; box-shadow: 20px 20px 50px 12px rgba(23,32,51,.08); }
-    .card-head { display: flex; justify-content: space-between;}
-    .card-head h3{ font-size: 18px; font-weight: 800; margin: 0; }
-</style>
 
 <div class="row ps-3 g-3 pt-3 container">
     <div class="col-md-2"><div class="created-card p-2"><span>Всего: </span><strong>{{ total }}</strong></div></div>

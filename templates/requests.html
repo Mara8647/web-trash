@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Заявки{% endblock %}
 {% block content %}
-<style>
-    .created-card { max-width: 800px; background: white; border: 1px solid var(--line); border-radius: 30px; padding: 24px; box-shadow: 20px 20px 50px 12px rgba(23,32,51,.08); }
-    .card-head { display: flex; justify-content: space-between; margin-bottom: 16px; }
-    .card-head h3{ font-size: 18px; font-weight: 800; margin: 0; }
-</style>
 <div class="row g-4 p-3">
   {% for request in requests %}
       <div class="col-md-6">
