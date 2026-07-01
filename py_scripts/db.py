@@ -103,6 +103,19 @@ class AuditLog(Base):
 
     employee: Mapped[Optional[Employee]] = relationship(back_populates="audit_logs")
 
+class Access(Base):
+    __tablename__ = "accesses"
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    department: Mapped[str] = mapped_column(String(120))
+    position: Mapped[str] = mapped_column(String(120))
+    access: Mapped[str] = mapped_column(String(64))
+    resource: Mapped[str] = mapped_column(String(64))
+    connects: Mapped[str] = mapped_column(String(64))
+    disconnects: Mapped[str] = mapped_column(String(64))
+    auto: Mapped[str] = mapped_column(String(64))
+    term: Mapped[str] = mapped_column(String(64))
+
 
 def get_session() -> Session:
     return SessionLocal()

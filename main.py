@@ -4,7 +4,7 @@ import transliterate
 import random
 import string
 from functools import wraps
-from py_scripts.db import init_db, add_employee, add_user, get_user, SessionLocal, User, Employee, Role, AuditLog
+from py_scripts.db import init_db, add_employee, add_user, get_user, SessionLocal, User, Employee, Role, AuditLog, Access
 from py_scripts.integrations import run_demo_step, MODULE_TITLE, disable_employee
 from sqlalchemy import desc
 import os
@@ -239,6 +239,32 @@ def employee_disable(employee_id: int):
     except Exception as exc:
         flash(f"Ошибка отключения: {exc}", "danger")
     return redirect(url_for("employee_detail", employee_id=employee_id))
+
+@app.route("/access_matrix")
+@login_required
+def access_matrix():
+    with SessionLocal() as session:
+        query = session.query(Access)
+        q = request.args.get("q", "")
+        department = request.args.get("department", "")
+        position = request.args.get("position", "")
+        resource_type = request.args.get("resource_type", "")
+        automation = request.args.get("automation", "")
+        if q:
+            like = f"%{q}%"
+            query = query.filter((Access.department.ilike(like)) | (Access.position.ilike(like)))
+
+        if department:
+            query = query.filter(Access.department == department)
+        if position:
+            query = query.filter(Access.position == position)
+        if resource_type:
+            query = query.filter(Access.resource == resource_type)
+        if automation:
+            query = query.filter(Access.auto == automation)
+        
+        items = query.all()
+        return render_template("access_matrix.html", accesses=items, q=q, d=department, p=position, r=resource_type, a=automation)
 
 @app.route("/roles")
 @login_required

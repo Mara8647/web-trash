@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Матрица доступов{% endblock %}
+{% block content %}
+<div class="created-card container mb-3">
+    <div class="card-head">
+        <h3>Фильтр матрицы</h3>
+    </div>
+    <form>
+        <div class="pb-2">
+            <select class="form-select" name="department">
+                <option value="">Все отделы</option>
+                {% for dep in ['Отдел персонала', 'Отдел продаж'] %}
+                <option value="{{ dep }}" {% if d == dep %} selected {% endif %}>{{ dep }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="pb-2">
+            <select class="form-select" name="position">
+                <option value="">Все должности</option>
+                {% for pos in ['Менеджер по персоналу', 'Менеджер по подбору и адаптации', 'Менеджер продаж', 'Специалист по кадрам'] %}
+                <option value="{{ pos }}" {% if p == pos %} selected {% endif %}>{{ pos }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="pb-2">
+            <select class="form-select" name="resource_type">
+                <option value>Все типы</option>
+                {% for res in ['1C', 'AD', 'AD-группа', 'RDP', 'VMWare', 'VPN', 'Внешний ресурс', 'Корпоративная система', 'Облако', 'Почта', 'Файловый ресурс'] %}
+                <option value="{{ res }}" {% if r == res %} selected {% endif %}>{{ res }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="pb-2">
+            <select class="form-select" name="automation">
+                <option value="">Автоматизация: все</option>
+                {% for auto in ['Да', 'Частично', 'Нет'] %}
+                <option value="{{ auto }}" {% if a == auto %} selected {% endif %}>{{ auto }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="pb-2">
+            <input class="form-control" name="q" placeholder="{{ q }}" value="{{ q }}">
+        </div>
+        <button class="btn btn-outline-primary">Фильтр</button>
+        <a class="btn btn-outline-secondary" href="/access_matrix">Сбросить</a>
+    </form>
+</div>
+
+<div class="created-card container">
+    <div class="card-head">
+        <h3>Все правила таблицей</h3>
+    </div>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ОТДЕЛ</th>
+                    <th>ДОЛЖНОСТЬ</th>
+                    <th>ДОСТУП</th>
+                    <th>РЕСУРС</th>
+                    <th>КТО ПОДКЛЮЧАЕТ</th>
+                    <th>КТО ОТКЛЮЧАЕТ</th>
+                    <th>АВТО</th>
+                    <th>СРОК</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for access in accesses %}
+                <tr>
+                    <td>{{ access.department }}</td>
+                    <td>{{ access.position }}</td>
+                    <td>{{ access.access }}</td>
+                    <td>{{ access.resource }}</td>
+                    <td>{{ access.connects }}</td>
+                    <td>{{ access.disconnects }}</td>
+                    <td>{{ access.auto }}</td>
+                    <td>{{ access.term }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
