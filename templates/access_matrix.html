@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Матрица доступов{% endblock %}
 {% block content %}
+<div class="mb-3">
+    <a class="btn btn-primary" href="#create-rule">Добавить правило</a>
+</div>
 <div class="created-card container mb-3">
     <div class="card-head">
         <h3>Фильтр матрицы</h3>
@@ -46,22 +49,14 @@
     </form>
 </div>
 
-<div class="created-card container">
+<div class="created-card container mb-3">
     <div class="card-head">
         <h3>Все правила таблицей</h3>
     </div>
-    <div>
+    <div class="table-responsive" id="table-view">
         <table class="table">
             <thead>
-                <tr>
-                    <th>ОТДЕЛ</th>
-                    <th>ДОЛЖНОСТЬ</th>
-                    <th>ДОСТУП</th>
-                    <th>РЕСУРС</th>
-                    <th>КТО ПОДКЛЮЧАЕТ</th>
-                    <th>КТО ОТКЛЮЧАЕТ</th>
-                    <th>АВТО</th>
-                    <th>СРОК</th>
+                <tr><th>ОТДЕЛ</th><th>ДОЛЖНОСТЬ</th><th>ДОСТУП</th><th>РЕСУРС</th><th>КТО ПОДКЛЮЧАЕТ</th><th>КТО ОТКЛЮЧАЕТ</th><th>АВТО</th><th>СРОК</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,5 +75,55 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="created-card container mb-3" id="create-rule">
+  <div class="card-head"><h3>Добавить правило в матрицу</h3></div>
+  <form method="post" class="row g-3">
+    <input type="hidden" name="action" value="create_rule">
+    <div class="col-md-6">
+      <label class="form-label">Отдел</label>
+      <input class="form-control" name="department" required placeholder="Бухгалтерия">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Должность</label>
+      <input class="form-control" name="position" required placeholder="Бухгалтер">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Доступ</label>
+      <input class="form-control" name="access_name" required placeholder="Synology: Бухгалтерия / RDP / 1С">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Ресурс</label>
+      <select class="form-select" name="resource_id" required>
+        <option value="6">1С ЗУП — 1С</option><option value="9">Active Directory пользователь — AD</option><option value="10">AD-группа доступа — AD-группа</option><option value="11">RDP / терминальный сервер — RDP</option><option value="12">VMware Windows VM — VMware</option><option value="8">MikroTik VPN — VPN</option><option value="4">Достависта / Яндекс Такси / СДЭК — Внешний сервис</option><option value="1">НН / Авито — Внешний сервис</option><option value="5">Bitrix24 — Корпоративная система</option><option value="2">HR-диск — Облако</option><option value="7">Microsoft 365 / корпоративная почта — Почта</option><option value="3">Почта офис-менеджера — Почта</option><option value="13">Сетевая папка через AD-группу — Файловый ресурс</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Кто подключает</label>
+      <input class="form-control" name="connect_responsible" placeholder="IT отдел / Руководитель отдела">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Кто отключает</label>
+      <input class="form-control" name="disconnect_responsible" placeholder="IT отдел / Руководитель отдела">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Авто</label>
+      <select class="form-select" name="automation_level">
+        <option>Нет</option><option>Частично</option><option>Да</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Срок</label>
+      <select class="form-select" name="due_stage">
+        <option>До выхода</option><option>Первый день</option><option>Первая неделя</option><option>В день увольнения</option>
+      </select>
+    </div>
+    <div class="col-12">
+      <label class="form-label">Комментарий</label>
+      <textarea class="form-control" name="comment" rows="2" placeholder="Например: доступ выдаётся через AD-группу GG_FS_NAS01_BUH_Modify"></textarea>
+    </div>
+    <div class="col-12"><button class="btn btn-primary" type="submit">Добавить правило</button></div>
+  </form>
 </div>
 {% endblock %}

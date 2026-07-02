@@ -240,7 +240,7 @@ def employee_disable(employee_id: int):
         flash(f"Ошибка отключения: {exc}", "danger")
     return redirect(url_for("employee_detail", employee_id=employee_id))
 
-@app.route("/access_matrix")
+@app.route("/access_matrix", methods=['POST', 'GET'])
 @login_required
 def access_matrix():
     with SessionLocal() as session:
@@ -250,6 +250,13 @@ def access_matrix():
         position = request.args.get("position", "")
         resource_type = request.args.get("resource_type", "")
         automation = request.args.get("automation", "")
+
+        if request.method == "POST":
+            new_dep = request.form.get("department")
+            new_pos = request.form.get("position")
+            new_access = request.form.get("access_name")
+            new_res = request.form.get("resource_id")
+
         if q:
             like = f"%{q}%"
             query = query.filter((Access.department.ilike(like)) | (Access.position.ilike(like)))
@@ -264,6 +271,7 @@ def access_matrix():
             query = query.filter(Access.auto == automation)
         
         items = query.all()
+
         return render_template("access_matrix.html", accesses=items, q=q, d=department, p=position, r=resource_type, a=automation)
 
 @app.route("/roles")
