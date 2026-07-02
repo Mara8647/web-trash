@@ -4,9 +4,9 @@ import transliterate
 import random
 import string
 from functools import wraps
-from py_scripts.db import init_db, add_employee, add_user, get_user, SessionLocal, User, Employee, Role, AuditLog, Access
+from py_scripts.db import init_db, add_employee, add_user, get_user, SessionLocal, engine, User, Employee, Role, AuditLog, Access, Resource
 from py_scripts.integrations import run_demo_step, MODULE_TITLE, disable_employee
-from sqlalchemy import desc
+from sqlalchemy import desc, select
 import os
 from dotenv import load_dotenv
 import datetime
@@ -243,36 +243,65 @@ def employee_disable(employee_id: int):
 @app.route("/access_matrix", methods=['POST', 'GET'])
 @login_required
 def access_matrix():
-    with SessionLocal() as session:
-        query = session.query(Access)
-        q = request.args.get("q", "")
-        department = request.args.get("department", "")
-        position = request.args.get("position", "")
-        resource_type = request.args.get("resource_type", "")
-        automation = request.args.get("automation", "")
+    with engine.connect() as conn:
+        with SessionLocal() as session:
+            query = session.query(Access)
+            q = request.args.get("q", "")
+            department = request.args.get("department", "")
+            position = request.args.get("position", "")
+            resource_type = request.args.get("resource_type", "")
+            automation = request.args.get("automation", "")
 
-        if request.method == "POST":
-            new_dep = request.form.get("department")
-            new_pos = request.form.get("position")
-            new_access = request.form.get("access_name")
-            new_res = request.form.get("resource_id")
+            if request.method == "POST":
+                new_dep = request.form.get("department")
+                new_pos = request.form.get("position")
+                new_access = request.form.get("access_name")
+                new_res_id = request.form.get("resource_id")
 
-        if q:
-            like = f"%{q}%"
-            query = query.filter((Access.department.ilike(like)) | (Access.position.ilike(like)))
+                stmt = select(Resource).where(Resource.id == new_res_id)
+                result = conn.execute(stmt).fetchone()[1]
 
-        if department:
-            query = query.filter(Access.department == department)
-        if position:
-            query = query.filter(Access.position == position)
-        if resource_type:
-            query = query.filter(Access.resource == resource_type)
-        if automation:
-            query = query.filter(Access.auto == automation)
-        
-        items = query.all()
+                new_res = result
 
-        return render_template("access_matrix.html", accesses=items, q=q, d=department, p=position, r=resource_type, a=automation)
+                new_con = request.form.get("connect_responsible")
+                print(new_con)
+                new_discon = request.form.get("disconnect_responsible")
+                print(new_discon)
+                new_auto = request.form.get("automation_level")
+                new_term = request.form.get("due_stage")
+                new_com = request.form.get("comment")
+
+                new_rule = Access(
+                    department=new_dep,
+                    position=new_pos,
+                    access=new_access,
+                    resource=new_res,
+                    connect_responsible=new_con,
+                    disconnect_responsible=new_discon,
+                    auto=new_auto,
+                    term=new_term,
+                    comment=new_com
+                )
+
+                session.add(new_rule)
+                session.commit()
+
+            if q:
+                like = f"%{q}%"
+                query = query.filter((Access.department.ilike(like)) | (Access.position.ilike(like)))
+
+            if department:
+                query = query.filter(Access.department == department)
+            if position:
+                query = query.filter(Access.position == position)
+            if resource_type:
+                query = query.filter(Access.resource == resource_type)
+            if automation:
+                query = query.filter(Access.auto == automation)
+            
+            items = query.all()
+
+            return render_template("access_matrix.html", accesses=items, q=q, d=department, p=position, r=resource_type, a=automation)
 
 @app.route("/roles")
 @login_required

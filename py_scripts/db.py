@@ -111,10 +111,20 @@ class Access(Base):
     position: Mapped[str] = mapped_column(String(120))
     access: Mapped[str] = mapped_column(String(64))
     resource: Mapped[str] = mapped_column(String(64))
-    connects: Mapped[str] = mapped_column(String(64))
-    disconnects: Mapped[str] = mapped_column(String(64))
+    connect_responsible: Mapped[str] = mapped_column(String(64))
+    disconnect_responsible: Mapped[str] = mapped_column(String(64))
     auto: Mapped[str] = mapped_column(String(64))
     term: Mapped[str] = mapped_column(String(64))
+    comment: Mapped[str] = mapped_column(String(120))
+
+class Resource(Base):
+    __tablename__ = "resources"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    resource: Mapped[str] = mapped_column(String(64))
+    type: Mapped[str] = mapped_column(String(64))
+    description: Mapped[str] = mapped_column(String(64))
+    auto: Mapped[str] = mapped_column(String(64))
 
 
 def get_session() -> Session:

@@ -66,8 +66,8 @@
                     <td>{{ access.position }}</td>
                     <td>{{ access.access }}</td>
                     <td>{{ access.resource }}</td>
-                    <td>{{ access.connects }}</td>
-                    <td>{{ access.disconnects }}</td>
+                    <td>{{ access.connect_responsible }}</td>
+                    <td>{{ access.disconnect_responsible }}</td>
                     <td>{{ access.auto }}</td>
                     <td>{{ access.term }}</td>
                 </tr>
@@ -96,7 +96,19 @@
     <div class="col-md-6">
       <label class="form-label">Ресурс</label>
       <select class="form-select" name="resource_id" required>
-        <option value="6">1С ЗУП — 1С</option><option value="9">Active Directory пользователь — AD</option><option value="10">AD-группа доступа — AD-группа</option><option value="11">RDP / терминальный сервер — RDP</option><option value="12">VMware Windows VM — VMware</option><option value="8">MikroTik VPN — VPN</option><option value="4">Достависта / Яндекс Такси / СДЭК — Внешний сервис</option><option value="1">НН / Авито — Внешний сервис</option><option value="5">Bitrix24 — Корпоративная система</option><option value="2">HR-диск — Облако</option><option value="7">Microsoft 365 / корпоративная почта — Почта</option><option value="3">Почта офис-менеджера — Почта</option><option value="13">Сетевая папка через AD-группу — Файловый ресурс</option>
+        <option value="1">НН / Авито — Внешний сервис</option>
+        <option value="2">HR-диск — Облако</option>
+        <option value="3">Почта офис-менеджера — Почта</option>
+        <option value="4">Достависта / Яндекс Такси / СДЭК — Внешний сервис</option>
+        <option value="5">Bitrix24 — Корпоративная система</option>
+        <option value="6">1С ЗУП — 1С</option>
+        <option value="7">Microsoft 365 / корпоративная почта — Почта</option>
+        <option value="8">MikroTik VPN — VPN</option>
+        <option value="9">Active Directory пользователь — AD</option>
+        <option value="10">AD-группа доступа — AD-группа</option>
+        <option value="11">RDP / терминальный сервер — RDP</option>
+        <option value="12">VMware Windows VM — VMware</option>
+        <option value="13">Сетевая папка через AD-группу — Файловый ресурс</option>
       </select>
     </div>
     <div class="col-md-4">
