@@ -3,6 +3,7 @@
 {% block content %}
 <div class="mb-3">
     <a class="btn btn-primary" href="#create-rule">Добавить правило</a>
+    <a class="btn btn-primary" href="#resources">Справочник ресурсов</a>
 </div>
 <div class="created-card container mb-3">
     <div class="card-head">
@@ -44,7 +45,7 @@
         <div class="pb-2">
             <input class="form-control" name="q" placeholder="{{ q }}" value="{{ q }}">
         </div>
-        <button class="btn btn-outline-primary">Фильтр</button>
+        <button class="btn btn-outline-primary" href="/access_matrix">Фильтр</button>
         <a class="btn btn-outline-secondary" href="/access_matrix">Сбросить</a>
     </form>
 </div>
@@ -75,6 +76,24 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="created-card container mb-3" id="resources">
+  <div class="card-head">
+    <h3>Справочник ресурсов</h3>
+  </div>
+  <div class="row g-1 p-2">
+    {% for resource in resources %}
+    <div class="card col-lg-6 gap-1">
+        <div class="d-flex justify-content-between gap-2">
+          <strong>{{ resource.resource }}</strong>
+          <span class="badge rounded-pill text-bg-light">{{ resource.auto }}</span>
+        </div>
+        <div class="small text-secondary mt-1">{{ resource.type }}</div>
+        <p>{{ resource.description }}</p>
+      </div>
+    {% endfor %}
+  </div>
 </div>
 
 <div class="created-card container mb-3" id="create-rule">

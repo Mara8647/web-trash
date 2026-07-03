@@ -252,6 +252,9 @@ def access_matrix():
             resource_type = request.args.get("resource_type", "")
             automation = request.args.get("automation", "")
 
+            resources = session.query(Resource).all()
+            print(resources)
+
             if request.method == "POST":
                 new_dep = request.form.get("department")
                 new_pos = request.form.get("position")
@@ -264,9 +267,7 @@ def access_matrix():
                 new_res = result
 
                 new_con = request.form.get("connect_responsible")
-                print(new_con)
                 new_discon = request.form.get("disconnect_responsible")
-                print(new_discon)
                 new_auto = request.form.get("automation_level")
                 new_term = request.form.get("due_stage")
                 new_com = request.form.get("comment")
@@ -301,7 +302,7 @@ def access_matrix():
             
             items = query.all()
 
-            return render_template("access_matrix.html", accesses=items, q=q, d=department, p=position, r=resource_type, a=automation)
+            return render_template("access_matrix.html", accesses=items, q=q, d=department, p=position, r=resource_type, a=automation, resources=resources)
 
 @app.route("/roles")
 @login_required
