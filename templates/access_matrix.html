@@ -82,9 +82,9 @@
   <div class="card-head">
     <h3>Справочник ресурсов</h3>
   </div>
-  <div class="row g-1 p-2">
+  <div class="row p-2 gap-3">
     {% for resource in resources %}
-    <div class="card col-lg-6 gap-1">
+    <div class="card col-lg-5 p-2">
         <div class="d-flex justify-content-between gap-2">
           <strong>{{ resource.resource }}</strong>
           <span class="badge rounded-pill text-bg-light">{{ resource.auto }}</span>

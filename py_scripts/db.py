@@ -155,6 +155,7 @@ def init_db() -> None:
                 session.commit()
 
     seed_roles()
+    seed_resources()
 
 
 def seed_roles() -> None:
@@ -231,6 +232,95 @@ def seed_roles() -> None:
             exists = session.query(Role).filter(Role.code == item["code"]).first()
             if not exists:
                 session.add(Role(**item))
+        session.commit()
+
+def seed_resources():
+    default_resources = [
+        {
+            "resource": "HH / Авито",
+            "type": "Внешний сервис",
+            "description": "Google Диск HR или общий HR-диск.",
+            "auto": "Ручной",
+        },
+        {
+            "resource": "HR-диск",
+            "type": "Облако",
+            "description": "Создание/отключение доменной учётной записи.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "Почта офис-менеджера",
+            "type": "Почта",
+            "description": "Доступ к общей почте офиса/офис-менеджера.",
+            "auto": "Ручной",
+        },
+        {
+            "resource": "Достависта / Яндекс Такси / СДЭК",
+            "type": "Внешний сервис",
+            "description": "Внешние сервисы доставки.",
+            "auto": "Ручной",
+        },
+        {
+            "resource": "Bitrix24",
+            "type": "Корпоративная система",
+            "description": "Портал, задачи, CRM и рабочие группы.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "1С ЗУП",
+            "type": "1С",
+            "description": "Доступ к 1С:ЗУП.",
+            "auto": "Ручной",
+        },
+        {
+            "resource": "Microsoft 365 / корпоративная почта",
+            "type": "Почта",
+            "description": "Корпоративный почтовый ящик.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "MikroTik VPN",
+            "type": "VPN",
+            "description": "OpenVPN-доступ через MikroTik.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "Active Directory пользователь",
+            "type": "AD",
+            "description": "Создание/отключение доменной учётной записи.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "AD-группа доступа",
+            "type": "AD-группа",
+            "description": "Добавление пользователя в доменные группы безопасности.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "RDP / терминальный сервер",
+            "type": "RDP",
+            "description": "Доступ на терминальный сервер через AD-группу Remote Desktop Users.",
+            "auto": "Авто",
+        },
+        {
+            "resource": "VMware Windows VM",
+            "type": "VMware",
+            "description": "Назначение персональной или общей Windows-виртуалки для работы по RDP.",
+            "auto": "Ручной",
+        },
+        {
+            "resource": "Сетевая папка через AD-группу",
+            "type": "Файловый ресурс",
+            "description": "Доступ к файловым шарам через AD-группы.",
+            "auto": "Авто",
+        }
+    ]
+
+    with SessionLocal() as session:
+        for item in default_resources:
+            exists = session.query(Resource).filter(Resource.resource == item["resource"]).first()
+            if not exists:
+                session.add(Resource(**item))
         session.commit()
 
 def add_employee(full_name, login, department, position, manager, start_date, need_email, need_vpn, need_onec, need_bitrix, email, role_id, actor):
