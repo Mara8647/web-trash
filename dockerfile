@@ -4,7 +4,8 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN mkdir -p ./py_scripts ./ps1_scripts ./templates ./templates/partials ./static
-RUN openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
+COPY cert.pem ./
+COPY key.pem ./
 COPY py_scripts/* ./py_scripts
 COPY main.py ./
 COPY ps1_scripts/* ./ps1_scripts

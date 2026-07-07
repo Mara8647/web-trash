@@ -6,7 +6,7 @@ import string
 from functools import wraps
 from py_scripts.db import init_db, add_employee, add_user, get_user, SessionLocal, engine, User, Employee, Role, AuditLog, Access, Resource
 from py_scripts.integrations import run_demo_step, MODULE_TITLE, disable_employee
-from sqlalchemy import desc, select
+from sqlalchemy import desc, select, delete
 import os
 from dotenv import load_dotenv
 import datetime
@@ -253,39 +253,46 @@ def access_matrix():
             automation = request.args.get("automation", "")
 
             resources = session.query(Resource).all()
-            print(resources)
 
             if request.method == "POST":
-                new_dep = request.form.get("department")
-                new_pos = request.form.get("position")
-                new_access = request.form.get("access_name")
-                new_res_id = request.form.get("resource_id")
+                if request.form.get("department") != None:
+                    new_dep = request.form.get("department")
+                    new_pos = request.form.get("position")
+                    new_access = request.form.get("access_name")
+                    new_res_id = request.form.get("resource_id")
 
-                stmt = select(Resource).where(Resource.id == new_res_id)
-                result = conn.execute(stmt).fetchone()[1]
+                    stmt = select(Resource).where(Resource.id == new_res_id)
+                    result = conn.execute(stmt).fetchone()[2]
 
-                new_res = result
+                    new_res = result
+                    print(result)
 
-                new_con = request.form.get("connect_responsible")
-                new_discon = request.form.get("disconnect_responsible")
-                new_auto = request.form.get("automation_level")
-                new_term = request.form.get("due_stage")
-                new_com = request.form.get("comment")
+                    new_con = request.form.get("connect_responsible")
+                    new_discon = request.form.get("disconnect_responsible")
+                    new_auto = request.form.get("automation_level")
+                    new_term = request.form.get("due_stage")
+                    new_com = request.form.get("comment")
 
-                new_rule = Access(
-                    department=new_dep,
-                    position=new_pos,
-                    access=new_access,
-                    resource=new_res,
-                    connect_responsible=new_con,
-                    disconnect_responsible=new_discon,
-                    auto=new_auto,
-                    term=new_term,
-                    comment=new_com
-                )
+                    new_rule = Access(
+                        department=new_dep,
+                        position=new_pos,
+                        access=new_access,
+                        resource=new_res,
+                        connect_responsible=new_con,
+                        disconnect_responsible=new_discon,
+                        auto=new_auto,
+                        term=new_term,
+                        comment=new_com
+                    )
 
-                session.add(new_rule)
-                session.commit()
+                    session.add(new_rule)
+                    session.commit()
+                else:
+                    rule_id = request.form.get('rule_id')
+
+                    session.query(Access).filter(Access.id == rule_id).delete()
+
+                    session.commit()
 
             if q:
                 like = f"%{q}%"
