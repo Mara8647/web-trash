@@ -1,0 +1,6 @@
+flask
+bcrypt
+dotenv
+transliterate
+sqlalchemy
+gunicorn

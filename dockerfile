@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM python:3.14-slim
 
 RUN mkdir /app
 WORKDIR /app
@@ -14,10 +14,9 @@ COPY templates/* ./templates/
 COPY templates/partials/* ./templates/partials
 RUN touch /app/vs_access_panel.sqlite3
 
-EXPOSE 50170
+EXPOSE 500
 
-RUN apt update
-RUN apt install -y python3 python3-pip
-RUN pip install --break-system-packages flask sqlalchemy transliterate bcrypt dotenv
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-CMD ["python3", "/app/main.py"]
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "main:app"]

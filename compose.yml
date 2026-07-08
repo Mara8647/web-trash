@@ -1,12 +1,26 @@
 services:
   web_app:
-    image: vs-access-panel:latest
+    image: access_panel:latest
     container_name: vs-access-panel
     environment:
       ADMIN_LOGIN: "web-admin"
       ADMIN_PASSWORD: "secret123"
       APP_KEY: "uy578lhkg"
     ports:
-      - 50170:50170
+      - 500:500
     volumes:
       - ./vs_access_panel.sqlite3:/app/vs_access_panel.sqlite3
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-for-flask
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./static:/app/static:ro
+      - ./key.pem:/etc/nginx/certs/key.pem:ro
+      - ./cert.pem:/etc/nginx/certs/cert.pem:ro
+    depends_on:
+      - web_app
