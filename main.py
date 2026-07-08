@@ -111,11 +111,16 @@ def dashboard():
             access=sess['access']
         )
     
-@app.route("/users")
+@app.route("/users", methods=["POST", "GET"])
 @login_required
 def users():
     with SessionLocal() as session:
         users = session.query(User)
+        if request.method == "POST":
+            user_id = request.form.get("user_id")
+            session.query(User).filter(User.id == user_id).delete()
+            session.commit()
+
     return render_template('users.html', users=users)
 
 @app.route("/create_user", methods=['POST', 'GET'])
