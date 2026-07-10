@@ -14,8 +14,6 @@ COPY templates/* ./templates/
 COPY templates/partials/* ./templates/partials
 RUN touch /app/vs_access_panel.sqlite3
 
-EXPOSE 500
-
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 

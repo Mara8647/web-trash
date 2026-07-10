@@ -6,8 +6,6 @@ services:
       ADMIN_LOGIN: "web-admin"
       ADMIN_PASSWORD: "secret123"
       APP_KEY: "uy578lhkg"
-    ports:
-      - 500:500
     volumes:
       - ./vs_access_panel.sqlite3:/app/vs_access_panel.sqlite3
 
