@@ -225,6 +225,32 @@ def seed_roles() -> None:
             "need_onec_default": True,
             "need_bitrix_default": True,
         },
+        {
+            "code": "hr_kdp",
+            "name": "HR / кадры",
+            "description": "Кадровое делопроизводство",
+            "department_default": "Отдел персонала",
+            "ad_groups": "GG_HR, GG_1C_ZUP",
+            "onec_groups": "1C ЗУП",
+            "vpn_profile": "ovpn-office",
+            "need_email_default": True,
+            "need_vpn_default": True,
+            "need_onec_default": True,
+            "need_bitrix_default": True,
+        },
+        {
+            "code": "hr_recruiter",
+            "name": "HR / подбор",
+            "description": "HR: подбор, адаптация, HR-диски, сайты поиска, Bitrix24",
+            "department_default": "Отдел персонала",
+            "ad_groups": "GG_HR, GG_Bitrix_Users",
+            "onec_groups": "",
+            "vpn_profile": "",
+            "need_email_default": True,
+            "need_vpn_default": False,
+            "need_onec_default": False,
+            "need_bitrix_default": True,
+        }
     ]
 
     with SessionLocal() as session:
